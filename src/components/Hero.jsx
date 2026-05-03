@@ -15,12 +15,7 @@ export default function Hero() {
     >
       <div className="hero-glow" />
 
-      {/* Text content */}
       <div className="relative z-10 text-center max-w-3xl mx-auto px-6 pt-36 pb-14 flex flex-col items-center">
-        <div className="section-label mb-8">
-          <span className="pulse-dot w-2 h-2 rounded-full bg-green-400 inline-block" />
-          Available for opportunities
-        </div>
 
         <h1
           className="font-bold tracking-tight mb-5 leading-tight"
@@ -68,7 +63,6 @@ export default function Hero() {
       {/* Screen + floating emojis */}
       <div className="relative z-10 w-full max-w-3xl mx-auto px-6 pb-0">
 
-        {/* Floating emojis above screen */}
         <div className="relative h-20">
           {floatingEmojis.map(({ emoji, top, left, delay, duration, size }) => (
             <span
@@ -91,7 +85,6 @@ export default function Hero() {
             </span>
           ))}
 
-          {/* Glow behind emojis */}
           <div
             style={{
               position: 'absolute',
@@ -106,7 +99,6 @@ export default function Hero() {
           />
         </div>
 
-        {/* Screen frame */}
         <div
           style={{
             borderRadius: '16px 16px 0 0',
@@ -117,7 +109,6 @@ export default function Hero() {
             overflow: 'hidden',
           }}
         >
-          {/* Screen titlebar */}
           <div
             className="flex items-center gap-2 px-4 py-3"
             style={{ borderBottom: '1px solid rgba(255,255,255,0.07)', backgroundColor: 'rgba(13,17,23,0.6)' }}
@@ -128,7 +119,6 @@ export default function Hero() {
             <span className="ml-2 text-xs" style={{ color: 'rgba(139,148,158,0.7)' }}>portfolio.js</span>
           </div>
 
-          {/* Code content */}
           <pre
             className="px-8 py-7 font-mono text-sm leading-7 overflow-x-auto"
             style={{ color: '#e6edf3', margin: 0 }}
