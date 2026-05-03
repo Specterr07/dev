@@ -1,31 +1,29 @@
 import React from "react";
 
 const floatingEmojis = [
-  { emoji: '🚀', top: '-52px', left: '18%', delay: '0s',   duration: '3.8s', size: '2rem' },
-  { emoji: '💻', top: '-70px', left: '44%', delay: '0.6s', duration: '4.4s', size: '2.4rem' },
-  { emoji: '⚡', top: '-44px', left: '72%', delay: '1.2s', duration: '3.5s', size: '1.8rem' },
+  { emoji: '🚀', top: '-56px', left: '16%',  delay: '0s',   duration: '3.8s', size: '2rem'   },
+  { emoji: '🔮', top: '-72px', left: '46%',  delay: '0.7s', duration: '4.5s', size: '2.2rem' },
+  { emoji: '⚡', top: '-48px', left: '74%',  delay: '1.3s', duration: '3.4s', size: '1.8rem' },
 ];
 
 export default function Hero() {
   return (
-    <main
-      id="about"
-      className="relative flex flex-col items-center overflow-hidden"
-      style={{ minHeight: '100vh' }}
-    >
+    <main id="about" className="relative flex flex-col items-center overflow-hidden" style={{ minHeight: '100vh' }}>
+
       <div className="hero-glow" />
 
-      <div className="relative z-10 text-center max-w-3xl mx-auto px-6 pt-36 pb-14 flex flex-col items-center">
+      {/* Text block */}
+      <div className="relative z-10 text-center max-w-3xl mx-auto px-6 pt-40 pb-12 flex flex-col items-center">
 
         <h1
-          className="font-bold tracking-tight mb-5 leading-tight"
-          style={{ fontSize: 'clamp(2rem, 5vw, 3.25rem)', color: '#ffffff' }}
+          className="font-bold tracking-tight mb-5 leading-tight fade-in"
+          style={{ fontSize: 'clamp(2.1rem, 5.5vw, 3.4rem)', color: '#ffffff', letterSpacing: '-0.02em' }}
         >
           Building digital<br />experiences.
         </h1>
 
         <p
-          className="text-base md:text-lg max-w-xl mb-10 leading-relaxed"
+          className="text-base md:text-lg max-w-xl mb-10 leading-relaxed fade-in fade-in-delay-1"
           style={{ color: '#8b949e' }}
         >
           Hey, I'm <span style={{ color: '#e6edf3', fontWeight: 600 }}>Vivek Patel</span> — a software developer based in{' '}
@@ -33,10 +31,10 @@ export default function Hero() {
           and dive deep into architecture and systems.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col sm:flex-row gap-3 fade-in fade-in-delay-2">
           <a
             href="#projects"
-            className="glow-green px-8 py-3 rounded-lg font-semibold text-sm transition-all duration-200"
+            className="glow-green px-7 py-3 rounded-lg font-semibold text-sm transition-all duration-200"
             style={{ backgroundColor: '#238636', color: '#ffffff', border: '1px solid #2ea043' }}
             onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#2ea043'; }}
             onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#238636'; }}
@@ -47,9 +45,9 @@ export default function Hero() {
             href="https://www.linkedin.com/in/vivek-patel-v7/"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-8 py-3 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2"
+            className="px-7 py-3 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 justify-center"
             style={{ backgroundColor: 'transparent', color: '#e6edf3', border: '1px solid #30363d' }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = '#8b949e'; e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)'; }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = '#8b949e'; e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.04)'; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = '#30363d'; e.currentTarget.style.backgroundColor = 'transparent'; }}
           >
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -61,9 +59,10 @@ export default function Hero() {
       </div>
 
       {/* Screen + floating emojis */}
-      <div className="relative z-10 w-full max-w-3xl mx-auto px-6 pb-0">
+      <div className="relative z-10 w-full max-w-3xl mx-auto px-6">
 
-        <div className="relative h-20">
+        {/* Emoji row */}
+        <div className="relative h-24">
           {floatingEmojis.map(({ emoji, top, left, delay, duration, size }) => (
             <span
               key={emoji}
@@ -77,52 +76,49 @@ export default function Hero() {
                 animationDelay: delay,
                 animationTimingFunction: 'ease-in-out',
                 animationIterationCount: 'infinite',
-                filter: 'drop-shadow(0 4px 16px rgba(124,58,237,0.35))',
+                filter: 'drop-shadow(0 6px 18px rgba(124,58,237,0.4))',
                 zIndex: 20,
               }}
             >
               {emoji}
             </span>
           ))}
-
-          <div
-            style={{
-              position: 'absolute',
-              top: '-20px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: '300px',
-              height: '120px',
-              background: 'radial-gradient(ellipse, rgba(124,58,237,0.28) 0%, transparent 70%)',
-              pointerEvents: 'none',
-            }}
-          />
+          {/* Bloom behind emojis */}
+          <div style={{
+            position: 'absolute',
+            top: '-10px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '320px',
+            height: '130px',
+            background: 'radial-gradient(ellipse, rgba(124,58,237,0.22) 0%, transparent 70%)',
+            pointerEvents: 'none',
+          }} />
         </div>
 
-        <div
-          style={{
-            borderRadius: '16px 16px 0 0',
-            border: '1px solid rgba(255,255,255,0.12)',
-            borderBottom: 'none',
-            background: 'linear-gradient(180deg, rgba(22,27,34,0.95) 0%, rgba(13,17,23,0.98) 100%)',
-            boxShadow: '0 -8px 60px rgba(124,58,237,0.12), 0 0 0 1px rgba(255,255,255,0.04) inset',
-            overflow: 'hidden',
-          }}
-        >
+        {/* Glass screen frame */}
+        <div style={{
+          borderRadius: '14px 14px 0 0',
+          borderTop: '1px solid rgba(255,255,255,0.1)',
+          borderLeft: '1px solid rgba(255,255,255,0.1)',
+          borderRight: '1px solid rgba(255,255,255,0.1)',
+          background: 'linear-gradient(180deg, rgba(22,27,34,0.96) 0%, rgba(13,17,23,0.99) 100%)',
+          boxShadow: '0 -12px 70px rgba(124,58,237,0.1), inset 0 1px 0 rgba(255,255,255,0.05)',
+          overflow: 'hidden',
+        }}>
+          {/* Title bar */}
           <div
             className="flex items-center gap-2 px-4 py-3"
-            style={{ borderBottom: '1px solid rgba(255,255,255,0.07)', backgroundColor: 'rgba(13,17,23,0.6)' }}
+            style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', backgroundColor: 'rgba(10,13,18,0.5)' }}
           >
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#ff5f56', opacity: 0.8 }} />
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#ffbd2e', opacity: 0.8 }} />
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#27c93f', opacity: 0.8 }} />
-            <span className="ml-2 text-xs" style={{ color: 'rgba(139,148,158,0.7)' }}>portfolio.js</span>
+            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#ff5f56', opacity: 0.85 }} />
+            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#ffbd2e', opacity: 0.85 }} />
+            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#27c93f', opacity: 0.85 }} />
+            <span className="ml-3 text-xs font-mono" style={{ color: 'rgba(110,118,129,0.8)' }}>portfolio.js</span>
           </div>
 
-          <pre
-            className="px-8 py-7 font-mono text-sm leading-7 overflow-x-auto"
-            style={{ color: '#e6edf3', margin: 0 }}
-          >
+          {/* Code */}
+          <pre className="px-8 py-7 font-mono text-sm leading-7 overflow-x-auto" style={{ color: '#e6edf3', margin: 0 }}>
             <code>
               <span style={{ color: '#ff7b72' }}>const</span>{' '}
               <span style={{ color: '#79c0ff' }}>vivek</span>{' '}
@@ -133,10 +129,10 @@ export default function Hero() {
               <span style={{ color: '#a5d6ff' }}>"Software Developer"</span>,{'\n'}
               {'  '}<span style={{ color: '#79c0ff' }}>location</span>:{' '}
               <span style={{ color: '#a5d6ff' }}>"Mumbai, India"</span>,{'\n'}
-              {'  '}<span style={{ color: '#79c0ff' }}>skills</span>:{' '}[
+              {'  '}<span style={{ color: '#79c0ff' }}>skills</span>:{' '}[{' '}
               <span style={{ color: '#a5d6ff' }}>"React"</span>,{' '}
               <span style={{ color: '#a5d6ff' }}>"Node.js"</span>,{' '}
-              <span style={{ color: '#a5d6ff' }}>"Python"</span>],{'\n'}
+              <span style={{ color: '#a5d6ff' }}>"Python"</span>{' '}],{'\n'}
               {'  '}<span style={{ color: '#79c0ff' }}>available</span>:{' '}
               <span style={{ color: '#56d364' }}>true</span>,{'\n'}
               {'}'}
@@ -145,6 +141,14 @@ export default function Hero() {
           </pre>
         </div>
       </div>
+
+      {/* Scroll hint */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 scroll-hint flex flex-col items-center gap-1">
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: '#484f58' }}>
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" />
+        </svg>
+      </div>
+
     </main>
   );
 }
