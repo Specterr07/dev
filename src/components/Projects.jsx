@@ -1,53 +1,103 @@
 import React from "react";
-import ProjectCard from "./ProjectCard";
 
 const projects = [
   {
-    emoji: "🛎️",
-    title: "Butler: Messaging System",
-    description: "IoT hotel automation system integrating ESP32 and Telegram. Sends automated service requests (cleaning, food) to staff and displays live status updates on a local LCD.",
-    tags: ["Flask", "ESP32 / IoT", "Telegram API"]
+    category: 'IoT · Messaging',
+    title: 'Butler',
+    subtitle: 'Hotel Messaging System',
+    tags: ['Flask', 'ESP32', 'Telegram API'],
   },
   {
-    emoji: "📋",
-    title: "Local Network Clipboard",
-    description: "A lightweight web application to share text and files seamlessly between devices on a local network. Features a REST API for low-latency communication.",
-    tags: ["Node.js", "Express.js", "REST API"]
+    category: 'Networking · Tools',
+    title: 'Clipboard',
+    subtitle: 'Local Network Clipboard',
+    tags: ['Node.js', 'Express.js', 'REST API'],
   },
   {
-    emoji: "✋",
-    title: "Gesture Control System",
-    description: "Real-time hand gesture recognition system using OpenCV. Enables hands-free desktop controls with high-accuracy detection and an intuitive calibration GUI.",
-    tags: ["Python", "OpenCV", "MediaPipe"]
+    category: 'Computer Vision',
+    title: 'GestureCtrl',
+    subtitle: 'Gesture Control System',
+    tags: ['Python', 'OpenCV', 'MediaPipe'],
   },
   {
-    emoji: "🎵",
-    title: "Things of Spotify",
-    description: "IoT backend using Flask to control Spotify playback via external hardware. Parses serial data to trigger play/pause commands with less than 200ms latency.",
-    tags: ["Flask", "IoT / ESP32", "Spotify API"]
+    category: 'IoT · Music',
+    title: 'SpotifyHW',
+    subtitle: 'Hardware Spotify Control',
+    tags: ['Flask', 'ESP32', 'Spotify API'],
   },
   {
-    emoji: "⚡",
-    title: "Portfolio Website",
-    description: "The site you are looking at right now. Built with React and Tailwind CSS v4 for maximum performance and deployed via GitHub Pages.",
-    tags: ["React", "Tailwind v4", "CI/CD"]
-  }
+    category: 'Web · React',
+    title: 'Portfolio',
+    subtitle: 'This website',
+    tags: ['React', 'Tailwind v4', 'CI/CD'],
+  },
 ];
 
 export default function Projects() {
   return (
     <section id="projects" className="max-w-6xl mx-auto px-6 py-20">
-      <div className="flex items-end justify-between mb-12">
-        <div>
-          <div className="section-label mb-4">Work</div>
-          <h2 className="text-3xl font-bold" style={{ color: '#e6edf3' }}>Featured Projects</h2>
-          <p className="mt-2 text-sm" style={{ color: '#8b949e' }}>A selection of things I've built.</p>
+      <div className="text-center mb-14">
+        <div className="section-label mx-auto mb-4">Work</div>
+        <h2 className="text-3xl font-bold mb-3" style={{ color: '#e6edf3' }}>Featured Projects</h2>
+        <p className="text-sm" style={{ color: '#8b949e' }}>A selection of things I've built.</p>
+      </div>
+
+      <div
+        className="rounded-xl overflow-hidden"
+        style={{ border: '1px solid #21262d' }}
+      >
+        <div className="grid grid-cols-1 md:grid-cols-3">
+          {projects.map((project, index) => {
+            const isLastRow = index >= 3;
+            const isRightEdge = (index + 1) % 3 === 0;
+            return (
+              <div
+                key={index}
+                className="group p-8 transition-all duration-300 cursor-default"
+                style={{
+                  borderRight: !isRightEdge && index < projects.length - 1 ? '1px solid #21262d' : 'none',
+                  borderBottom: !isLastRow ? '1px solid #21262d' : 'none',
+                  backgroundColor: 'transparent',
+                }}
+                onMouseEnter={e => e.currentTarget.style.backgroundColor = '#161b22'}
+                onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
+              >
+                <div className="mb-6">
+                  <p className="text-xs font-medium tracking-widest uppercase mb-3" style={{ color: '#6e7681' }}>
+                    {project.category}
+                  </p>
+                  <h3 className="text-xl font-bold mb-1 transition-colors duration-200" style={{ color: '#e6edf3' }}>
+                    {project.title}
+                  </h3>
+                  <p className="text-sm" style={{ color: '#8b949e' }}>{project.subtitle}</p>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {project.tags.map((tag, i) => (
+                    <span
+                      key={i}
+                      className="text-xs px-2.5 py-0.5 rounded-full font-medium"
+                      style={{
+                        backgroundColor: '#21262d',
+                        color: '#8b949e',
+                        border: '1px solid #30363d',
+                      }}
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </div>
+      </div>
+
+      <div className="mt-6 text-center">
         <a
           href="https://github.com/Specterr07"
           target="_blank"
           rel="noopener noreferrer"
-          className="hidden md:flex items-center gap-2 text-sm font-medium transition-colors duration-200"
+          className="inline-flex items-center gap-2 text-sm font-medium transition-colors duration-200"
           style={{ color: '#58a6ff' }}
           onMouseEnter={e => e.currentTarget.style.color = '#79c0ff'}
           onMouseLeave={e => e.currentTarget.style.color = '#58a6ff'}
@@ -57,12 +107,6 @@ export default function Projects() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
           </svg>
         </a>
-      </div>
-
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {projects.map((project, index) => (
-          <ProjectCard key={index} {...project} />
-        ))}
       </div>
     </section>
   );
