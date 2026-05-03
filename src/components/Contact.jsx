@@ -7,7 +7,7 @@ export default function Contact() {
         <div className="section-label mx-auto mb-4">Contact</div>
         <h2 className="text-3xl font-bold mb-3" style={{ color: '#e6edf3' }}>Let's build something</h2>
         <p className="text-sm leading-relaxed" style={{ color: '#8b949e' }}>
-          I'm currently open to full-time opportunities and freelance work. Let's connect.
+          Have a project in mind or want to talk engineering? Reach out — I'm always up for a good conversation.
         </p>
       </div>
 
