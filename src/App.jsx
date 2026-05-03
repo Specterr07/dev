@@ -8,7 +8,7 @@ import Footer from './components/Footer';
 
 function App() {
   return (
-    <div className='bg-white text-slate-900 font-sans antialiased'>
+    <div style={{ backgroundColor: '#0d1117', color: '#e6edf3' }} className="font-sans antialiased min-h-screen">
       <Navbar />
       <Hero />
       <Features />
@@ -16,7 +16,7 @@ function App() {
       <Contact />
       <Footer />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
