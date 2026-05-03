@@ -4,19 +4,19 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => setScrolled(window.scrollY > 60);
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   return (
     <nav
-      className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+      className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
       style={{
-        backdropFilter: 'blur(16px)',
-        WebkitBackdropFilter: 'blur(16px)',
-        backgroundColor: scrolled ? 'rgba(13, 17, 23, 0.95)' : 'rgba(13, 17, 23, 0.7)',
-        borderBottom: '1px solid #21262d',
+        backdropFilter: scrolled ? 'blur(16px)' : 'none',
+        WebkitBackdropFilter: scrolled ? 'blur(16px)' : 'none',
+        backgroundColor: scrolled ? 'rgba(13, 17, 23, 0.88)' : 'transparent',
+        borderBottom: scrolled ? '1px solid #21262d' : '1px solid transparent',
       }}
     >
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -37,7 +37,7 @@ export default function Navbar() {
               href={`#${item.toLowerCase()}`}
               className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
               style={{ color: '#8b949e' }}
-              onMouseEnter={e => { e.target.style.color = '#e6edf3'; e.target.style.backgroundColor = '#161b22'; }}
+              onMouseEnter={e => { e.target.style.color = '#e6edf3'; e.target.style.backgroundColor = 'rgba(255,255,255,0.06)'; }}
               onMouseLeave={e => { e.target.style.color = '#8b949e'; e.target.style.backgroundColor = 'transparent'; }}
             >
               {item}
