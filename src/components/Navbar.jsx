@@ -21,12 +21,12 @@ export default function Navbar() {
     >
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         <a href="#" className="flex items-center gap-2 font-bold text-lg" style={{ color: '#e6edf3' }}>
-          <span
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-black"
-            style={{ background: 'linear-gradient(135deg, #7c3aed, #3b82f6)', color: 'white' }}
+          <div
+            className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0"
+            style={{ background: '#161b22', border: '1px solid #30363d' }}
           >
-            VP
-          </span>
+            <img src="/vivek-face.png" alt="Vivek" className="w-full h-full object-cover" />
+          </div>
           <span>Vivek<span className="hidden sm:inline" style={{ color: '#8b949e' }}>.dev</span></span>
         </a>
 

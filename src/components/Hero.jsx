@@ -5,7 +5,6 @@ export default function Hero() {
     <main id="about" className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-16">
 
       <div className="hero-glow" />
-      <div className="grid-pattern absolute inset-0 opacity-50" />
 
       <div className="relative z-10 text-center max-w-4xl mx-auto px-6 py-24 flex flex-col items-center">
 
@@ -37,13 +36,18 @@ export default function Hero() {
             View my work
           </a>
           <a
-            href="#contact"
-            className="px-8 py-3.5 rounded-lg font-semibold text-sm transition-all duration-200"
+            href="https://www.linkedin.com/in/vivek-patel-v7/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-8 py-3.5 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2"
             style={{ backgroundColor: 'transparent', color: '#e6edf3', border: '1px solid #30363d' }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = '#8b949e'; e.currentTarget.style.backgroundColor = '#161b22'; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = '#30363d'; e.currentTarget.style.backgroundColor = 'transparent'; }}
           >
-            Get in touch
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 21.227.792 22 1.771 22h20.451C23.2 22 24 21.227 24 20.542V1.729C24 .774 23.2 0 22.225 0z"/>
+            </svg>
+            Connect on LinkedIn
           </a>
         </div>
 
@@ -86,7 +90,6 @@ export default function Hero() {
 
         <div className="flex items-center gap-8 mt-16" style={{ color: '#6e7681' }}>
           {[
-            { num: '5+', label: 'Projects Built' },
             { num: '2+', label: 'Years Coding' },
             { num: '∞', label: 'Lines of Code' },
           ].map(({ num, label }) => (
