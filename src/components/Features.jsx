@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const tabs = [
   {
@@ -66,7 +66,7 @@ const tabs = [
       </svg>
     ),
     heading: 'If it runs twice, automate it.',
-    description: 'I build automation pipelines, IoT triggers, and CI/CD workflows that cut repetitive work. Whether it\'s hardware serial events or GitHub Actions, I wire things so they run themselves.',
+    description: "I build automation pipelines, IoT triggers, and CI/CD workflows that cut repetitive work. Whether it's hardware serial events or GitHub Actions, I wire things so they run themselves.",
     bullets: ['CI/CD pipelines & GitHub Actions', 'IoT event-driven triggers', 'Background job scheduling'],
     snippet: [
       { tokens: [{ c: '#8b949e', t: '# .github/workflows/deploy.yml' }] },
@@ -86,7 +86,7 @@ const tabs = [
       </svg>
     ),
     heading: 'Security baked in, not bolted on.',
-    description: 'I validate inputs, sanitize data, manage secrets properly, and think adversarially from the start. Security isn\'t a final checklist — it\'s a mindset applied at every layer.',
+    description: "I validate inputs, sanitize data, manage secrets properly, and think adversarially from the start. Security isn't a final checklist — it's a mindset applied at every layer.",
     bullets: ['Input validation & sanitization', 'Secrets management & env hygiene', 'Minimal attack surface by design'],
     snippet: [
       { tokens: [{ c: '#8b949e', t: '# Never trust input' }] },
@@ -101,26 +101,34 @@ const tabs = [
 
 export default function Features() {
   const [active, setActive] = useState('code');
+  const [contentKey, setContentKey] = useState(0);
   const current = tabs.find(t => t.id === active);
+
+  function switchTab(id) {
+    setActive(id);
+    setContentKey(k => k + 1);
+  }
 
   return (
     <section className="max-w-6xl mx-auto px-6 py-20">
-      <div className="text-center mb-14">
-        <div className="section-label mx-auto mb-4">How I work</div>
-        <h2 className="text-3xl font-bold mb-3" style={{ color: '#e6edf3' }}>My approach</h2>
-        <p className="text-sm" style={{ color: '#8b949e' }}>The principles behind everything I build.</p>
+      <div className="px-6">
+        <div className="section-divider" />
       </div>
 
-      <div
-        className="rounded-2xl overflow-hidden"
-        style={{ border: '1px solid #30363d', backgroundColor: '#0d1117' }}
-      >
+      <div className="text-center mt-20 mb-12">
+        <div className="section-label mx-auto mb-4">How I work</div>
+        <h2 className="text-3xl font-bold mb-3" style={{ color: '#e6edf3', letterSpacing: '-0.02em' }}>My approach</h2>
+        <p className="text-sm" style={{ color: '#6e7681' }}>The principles behind everything I build.</p>
+      </div>
+
+      <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid #21262d' }}>
+
         {/* Tab bar */}
         <div
-          className="flex items-center gap-1 px-4 py-3 overflow-x-auto"
+          className="flex items-center gap-1 px-4 py-2 overflow-x-auto"
           style={{ borderBottom: '1px solid #21262d', backgroundColor: '#161b22' }}
         >
-          <div className="flex gap-1.5 mr-4 flex-shrink-0">
+          <div className="flex gap-1.5 mr-4 flex-shrink-0 py-1">
             <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#ff5f56' }} />
             <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#ffbd2e' }} />
             <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#27c93f' }} />
@@ -128,49 +136,59 @@ export default function Features() {
           {tabs.map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActive(tab.id)}
-              className="flex items-center gap-2 px-4 py-1.5 rounded-md text-sm font-medium transition-all duration-200 flex-shrink-0"
+              onClick={() => switchTab(tab.id)}
+              className="relative flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-all duration-200 flex-shrink-0"
               style={{
-                backgroundColor: active === tab.id ? '#0d1117' : 'transparent',
-                color: active === tab.id ? '#e6edf3' : '#8b949e',
-                border: active === tab.id ? '1px solid #30363d' : '1px solid transparent',
+                color: active === tab.id ? '#e6edf3' : '#6e7681',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
               }}
             >
               {tab.icon}
               {tab.label}
+              {/* Active underline */}
+              {active === tab.id && (
+                <span
+                  style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    left: '8px',
+                    right: '8px',
+                    height: '2px',
+                    borderRadius: '2px 2px 0 0',
+                    backgroundColor: '#f78166',
+                  }}
+                />
+              )}
             </button>
           ))}
         </div>
 
-        {/* Content */}
-        <div className="grid md:grid-cols-2 gap-0">
+        {/* Content with fade transition */}
+        <div key={contentKey} className="tab-content grid md:grid-cols-2" style={{ minHeight: '280px' }}>
+
           {/* Left: description */}
-          <div
-            className="p-8 md:p-10 flex flex-col justify-center"
-            style={{ borderRight: '1px solid #21262d' }}
-          >
-            <h3 className="text-xl font-semibold mb-4 leading-snug" style={{ color: '#e6edf3' }}>
+          <div className="p-8 md:p-10 flex flex-col justify-center" style={{ borderRight: '1px solid #21262d' }}>
+            <h3 className="text-xl font-semibold mb-4 leading-snug" style={{ color: '#e6edf3', letterSpacing: '-0.01em' }}>
               {current.heading}
             </h3>
             <p className="text-sm leading-relaxed mb-6" style={{ color: '#8b949e' }}>
               {current.description}
             </p>
-            <ul className="space-y-2">
+            <ul className="space-y-2.5">
               {current.bullets.map((b, i) => (
-                <li key={i} className="flex items-center gap-2 text-sm" style={{ color: '#8b949e' }}>
-                  <span style={{ color: '#3fb950' }}>→</span>
+                <li key={i} className="flex items-center gap-2.5 text-sm" style={{ color: '#8b949e' }}>
+                  <span className="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 text-xs" style={{ backgroundColor: 'rgba(63,185,80,0.12)', color: '#3fb950' }}>✓</span>
                   {b}
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Right: code snippet */}
-          <div className="p-8 md:p-10 flex flex-col justify-center" style={{ backgroundColor: '#0a0d12' }}>
-            <div
-              className="rounded-lg p-5 font-mono text-sm leading-8 overflow-x-auto"
-              style={{ backgroundColor: '#161b22', border: '1px solid #21262d' }}
-            >
+          {/* Right: code */}
+          <div className="p-8 md:p-10 flex flex-col justify-center" style={{ backgroundColor: 'rgba(10,13,18,0.5)' }}>
+            <div className="rounded-lg p-5 font-mono text-sm leading-8" style={{ backgroundColor: '#161b22', border: '1px solid #21262d' }}>
               {current.snippet.map((line, i) => (
                 <div key={i}>
                   {line.tokens.map((tok, j) => (
