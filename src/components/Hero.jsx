@@ -1,34 +1,47 @@
 import React from "react";
 
+const floatingEmojis = [
+  { emoji: '🚀', top: '-52px', left: '18%', delay: '0s',   duration: '3.8s', size: '2rem' },
+  { emoji: '💻', top: '-70px', left: '44%', delay: '0.6s', duration: '4.4s', size: '2.4rem' },
+  { emoji: '⚡', top: '-44px', left: '72%', delay: '1.2s', duration: '3.5s', size: '1.8rem' },
+];
+
 export default function Hero() {
   return (
-    <main id="about" className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-16">
-
+    <main
+      id="about"
+      className="relative flex flex-col items-center overflow-hidden"
+      style={{ minHeight: '100vh' }}
+    >
       <div className="hero-glow" />
 
-      <div className="relative z-10 text-center max-w-4xl mx-auto px-6 py-24 flex flex-col items-center">
-
+      {/* Text content */}
+      <div className="relative z-10 text-center max-w-3xl mx-auto px-6 pt-36 pb-14 flex flex-col items-center">
         <div className="section-label mb-8">
           <span className="pulse-dot w-2 h-2 rounded-full bg-green-400 inline-block" />
           Available for opportunities
         </div>
 
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight mb-6 leading-none">
-          <span className="gradient-text">Building digital</span>
-          <br />
-          <span style={{ color: '#e6edf3' }}>experiences.</span>
+        <h1
+          className="font-bold tracking-tight mb-5 leading-tight"
+          style={{ fontSize: 'clamp(2rem, 5vw, 3.25rem)', color: '#ffffff' }}
+        >
+          Building digital<br />experiences.
         </h1>
 
-        <p className="text-lg md:text-xl max-w-2xl mb-10 leading-relaxed" style={{ color: '#8b949e' }}>
+        <p
+          className="text-base md:text-lg max-w-xl mb-10 leading-relaxed"
+          style={{ color: '#8b949e' }}
+        >
           Hey, I'm <span style={{ color: '#e6edf3', fontWeight: 600 }}>Vivek Patel</span> — a software developer based in{' '}
           <span style={{ color: '#e6edf3', fontWeight: 600 }}>Mumbai</span>. I build practical tools
           and dive deep into architecture and systems.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 mb-20">
+        <div className="flex flex-col sm:flex-row gap-4">
           <a
             href="#projects"
-            className="glow-green px-8 py-3.5 rounded-lg font-semibold text-sm transition-all duration-200"
+            className="glow-green px-8 py-3 rounded-lg font-semibold text-sm transition-all duration-200"
             style={{ backgroundColor: '#238636', color: '#ffffff', border: '1px solid #2ea043' }}
             onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#2ea043'; }}
             onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#238636'; }}
@@ -39,9 +52,9 @@ export default function Hero() {
             href="https://www.linkedin.com/in/vivek-patel-v7/"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-8 py-3.5 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2"
+            className="px-8 py-3 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2"
             style={{ backgroundColor: 'transparent', color: '#e6edf3', border: '1px solid #30363d' }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = '#8b949e'; e.currentTarget.style.backgroundColor = '#161b22'; }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = '#8b949e'; e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)'; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = '#30363d'; e.currentTarget.style.backgroundColor = 'transparent'; }}
           >
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -50,22 +63,76 @@ export default function Hero() {
             Connect on LinkedIn
           </a>
         </div>
+      </div>
 
+      {/* Screen + floating emojis */}
+      <div className="relative z-10 w-full max-w-3xl mx-auto px-6 pb-0">
+
+        {/* Floating emojis above screen */}
+        <div className="relative h-20">
+          {floatingEmojis.map(({ emoji, top, left, delay, duration, size }) => (
+            <span
+              key={emoji}
+              style={{
+                position: 'absolute',
+                top,
+                left,
+                fontSize: size,
+                animationName: 'floatEmoji',
+                animationDuration: duration,
+                animationDelay: delay,
+                animationTimingFunction: 'ease-in-out',
+                animationIterationCount: 'infinite',
+                filter: 'drop-shadow(0 4px 16px rgba(124,58,237,0.35))',
+                zIndex: 20,
+              }}
+            >
+              {emoji}
+            </span>
+          ))}
+
+          {/* Glow behind emojis */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '-20px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: '300px',
+              height: '120px',
+              background: 'radial-gradient(ellipse, rgba(124,58,237,0.28) 0%, transparent 70%)',
+              pointerEvents: 'none',
+            }}
+          />
+        </div>
+
+        {/* Screen frame */}
         <div
-          className="float-anim w-full max-w-2xl rounded-xl overflow-hidden text-left"
           style={{
-            backgroundColor: '#161b22',
-            border: '1px solid #30363d',
-            boxShadow: '0 25px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.03)',
+            borderRadius: '16px 16px 0 0',
+            border: '1px solid rgba(255,255,255,0.12)',
+            borderBottom: 'none',
+            background: 'linear-gradient(180deg, rgba(22,27,34,0.95) 0%, rgba(13,17,23,0.98) 100%)',
+            boxShadow: '0 -8px 60px rgba(124,58,237,0.12), 0 0 0 1px rgba(255,255,255,0.04) inset',
+            overflow: 'hidden',
           }}
         >
-          <div className="flex items-center gap-2 px-4 py-3" style={{ borderBottom: '1px solid #21262d', backgroundColor: '#0d1117' }}>
-            <div className="w-3 h-3 rounded-full bg-red-500 opacity-80" />
-            <div className="w-3 h-3 rounded-full bg-yellow-500 opacity-80" />
-            <div className="w-3 h-3 rounded-full bg-green-500 opacity-80" />
-            <span className="ml-2 text-xs" style={{ color: '#6e7681' }}>portfolio.js</span>
+          {/* Screen titlebar */}
+          <div
+            className="flex items-center gap-2 px-4 py-3"
+            style={{ borderBottom: '1px solid rgba(255,255,255,0.07)', backgroundColor: 'rgba(13,17,23,0.6)' }}
+          >
+            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#ff5f56', opacity: 0.8 }} />
+            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#ffbd2e', opacity: 0.8 }} />
+            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#27c93f', opacity: 0.8 }} />
+            <span className="ml-2 text-xs" style={{ color: 'rgba(139,148,158,0.7)' }}>portfolio.js</span>
           </div>
-          <pre className="p-6 font-mono text-sm leading-7 overflow-x-auto" style={{ color: '#e6edf3' }}>
+
+          {/* Code content */}
+          <pre
+            className="px-8 py-7 font-mono text-sm leading-7 overflow-x-auto"
+            style={{ color: '#e6edf3', margin: 0 }}
+          >
             <code>
               <span style={{ color: '#ff7b72' }}>const</span>{' '}
               <span style={{ color: '#79c0ff' }}>vivek</span>{' '}
@@ -86,18 +153,6 @@ export default function Hero() {
               <span className="cursor-blink" style={{ color: '#58a6ff' }}>|</span>
             </code>
           </pre>
-        </div>
-
-        <div className="flex items-center gap-8 mt-16" style={{ color: '#6e7681' }}>
-          {[
-            { num: '2+', label: 'Years Coding' },
-            { num: '∞', label: 'Lines of Code' },
-          ].map(({ num, label }) => (
-            <div key={label} className="text-center">
-              <div className="text-2xl font-bold" style={{ color: '#e6edf3' }}>{num}</div>
-              <div className="text-xs mt-1">{label}</div>
-            </div>
-          ))}
         </div>
       </div>
     </main>
