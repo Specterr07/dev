@@ -21,7 +21,7 @@ export default function Contact() {
 
                 <a href="Vivek_Patel_Software_Developer.pdf" target="_blank" 
                 className="flex items-center justify-center gap-2 bg-white text-slate-700 border-2 border-slate-200 py-4 rounded-xl font-bold hover:border-slate-900 hover:text-slate-900 transition shadow-sm hover:shadow-md">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                     View Resume
                 </a>
 
@@ -37,18 +37,18 @@ export default function Contact() {
                 
                 <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                        <label className="text-sm font-medium text-slate-700">Name</label>
-                        <input type="text" name="name" required className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 outline-none transition" placeholder="John Doe"/>
+                        <label htmlFor="contact-name" className="text-sm font-medium text-slate-700">Name</label>
+                        <input id="contact-name" type="text" name="name" required className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 outline-none transition" placeholder="John Doe"/>
                     </div>
                     <div className="space-y-2">
-                        <label className="text-sm font-medium text-slate-700">Email</label>
-                        <input type="email" name="email" required className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 outline-none transition" placeholder="john@example.com"/>
+                        <label htmlFor="contact-email" className="text-sm font-medium text-slate-700">Email</label>
+                        <input id="contact-email" type="email" name="email" required className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 outline-none transition" placeholder="john@example.com"/>
                     </div>
                 </div>
 
                 <div className="space-y-2">
-                    <label className="text-sm font-medium text-slate-700">Message</label>
-                    <textarea name="message" rows="4" required className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 outline-none transition" placeholder="Tell me about your project..."></textarea>
+                    <label htmlFor="contact-message" className="text-sm font-medium text-slate-700">Message</label>
+                    <textarea id="contact-message" name="message" rows="4" required className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 outline-none transition" placeholder="Tell me about your project..."></textarea>
                 </div>
 
                 <button type="submit" className="w-full bg-slate-900 text-white font-bold py-4 rounded-lg hover:bg-slate-800 transition transform hover:-translate-y-1">
