@@ -1,0 +1,579 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #000;
+  color: #fff;
+  font-family: var(--font-aboreto), serif;
+}
+
+/* The stage never scrolls sideways. */
+html {
+  overflow-x: hidden;
+}
+
+img {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+/* The cinematic stage frame.
+   Landscape / desktop: letterbox — the whole ~2.83:1 frame stays visible, the
+   black around it reads as a widescreen bar, nothing clips.
+   Portrait phone: that would leave a tiny band, so fill the screen and crop
+   toward the archer instead. (Wide right-aligned text is partly cropped here —
+   portrait-specific frame exports are the proper fix.) */
+.stage-frame {
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .stage-frame {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    object-fit: cover;
+    object-position: 22% 45%;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Custom scrollbar — thin, monochrome, on-theme (no browser default chrome).
+--------------------------------------------------------------------------- */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.34);
+  background-clip: content-box;
+}
+
+/* ---------------------------------------------------------------------------
+   Site navigation — thin, translucent, Aboreto, wide tracking. Barely-there
+   over the cinematic hero; gains a blurred bar once you scroll past the first
+   screen ("stepping out of the mist").
+--------------------------------------------------------------------------- */
+.nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  padding: 0 clamp(1.1rem, 4vw, 3rem);
+  color: rgba(255, 255, 255, 0.72);
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background 0.4s ease, border-color 0.4s ease;
+}
+
+.nav--solid {
+  background: rgba(8, 9, 10, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+
+.nav__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  flex: none;
+  white-space: nowrap;
+  color: #fff;
+  text-decoration: none;
+  font-size: clamp(0.8rem, 1.4vw, 0.98rem);
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+}
+
+.nav__mark {
+  font-size: 0.7em;
+  line-height: 1;
+  opacity: 0.8;
+  transform: translateY(-0.05em);
+}
+
+/* scroll-progress hairline pinned to the bottom of the bar */
+.nav__progress {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  height: 1px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.55);
+  transform-origin: left;
+  transform: scaleX(0);
+}
+
+/* ---------------------------------------------------------------------------
+   Contact — a caret + "Contact" at the right of the bar. Clicking it unfurls
+   the three options leftward, inline in the navbar; clicking again collapses.
+--------------------------------------------------------------------------- */
+.nav__contact {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.8rem, 2vw, 1.5rem);
+  min-width: 0;
+}
+
+.nav__socials {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 2vw, 1.5rem);
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: max-width 0.45s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
+}
+
+.nav__contact--open .nav__socials {
+  max-width: 60vw;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.nav__social {
+  position: relative;
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  font-size: clamp(0.64rem, 0.9vw, 0.76rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 0.4em 0;
+  transition: color 0.3s ease;
+}
+
+.nav__social::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 1px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav__social:hover,
+.nav__social:focus-visible {
+  color: #fff;
+  outline: none;
+}
+
+.nav__social:hover::after,
+.nav__social:focus-visible::after {
+  transform: scaleX(1);
+}
+
+.nav__contact-toggle {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  color: rgba(255, 255, 255, 0.72);
+  font-family: inherit;
+  font-size: clamp(0.72rem, 1.05vw, 0.86rem);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  padding: 0.4em 0;
+  transition: color 0.3s ease;
+}
+
+.nav__contact-toggle:hover,
+.nav__contact-toggle:focus-visible {
+  color: #fff;
+  outline: none;
+}
+
+.nav__caret {
+  font-size: 1.1em;
+  line-height: 1;
+  opacity: 0.55;
+  transition: opacity 0.3s ease;
+}
+
+.nav__contact--open .nav__caret {
+  opacity: 1;
+}
+
+/* Tablet / phone: roomier tap targets. */
+@media (max-width: 768px) {
+  .nav {
+    padding: 0 clamp(1rem, 5vw, 1.6rem);
+  }
+  .nav__contact-toggle,
+  .nav__social {
+    padding-top: 0.7em;
+    padding-bottom: 0.7em;
+  }
+}
+
+/* Phone: drop the wordmark text (keep the mark), and instead of cramming the
+   three options into the bar, drop them into a short panel below "Contact". */
+@media (max-width: 600px) {
+  .nav__brand span:not(.nav__mark) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .nav__contact {
+    position: relative;
+  }
+
+  .nav__socials {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    max-width: min(66vw, 220px);
+    max-height: 0;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 4px;
+    background: rgba(8, 9, 10, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: max-height 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
+  }
+
+  .nav__contact--open .nav__socials {
+    max-width: min(66vw, 220px);
+    max-height: 14rem;
+  }
+
+  .nav__social {
+    padding: 0.95rem 1.1rem;
+    text-align: right;
+    letter-spacing: 0.16em;
+  }
+
+  .nav__social + .nav__social {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .nav__social::after {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Scroll hint — the classic animated mouse-wheel above a "Scroll" label,
+   as used on most animation portfolios. Fades out on first scroll (GSAP
+   drives its opacity).
+--------------------------------------------------------------------------- */
+.scroll-hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 3.4vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  pointer-events: none;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.scroll-hint__mouse {
+  width: 24px;
+  height: 38px;
+  border: 1.5px solid currentColor;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  padding-top: 6px;
+  opacity: 0.85;
+}
+
+.scroll-hint__wheel {
+  width: 3px;
+  height: 7px;
+  border-radius: 2px;
+  background: currentColor;
+  animation: scroll-hint-wheel 1.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes scroll-hint-wheel {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  70% {
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+}
+
+.scroll-hint__label {
+  font-size: clamp(0.62rem, 1vw, 0.82rem);
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+}
+
+/* Phone: nudge clear of the home indicator and shrink a touch. */
+@media (max-width: 600px) {
+  .scroll-hint {
+    bottom: max(2.4vh, env(safe-area-inset-bottom, 0px));
+    gap: 0.6rem;
+  }
+  .scroll-hint__mouse {
+    width: 21px;
+    height: 33px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-hint__wheel {
+    animation: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Ambient sound toggle — fixed bottom-left, opposite the scroll hint.
+--------------------------------------------------------------------------- */
+.sound-toggle {
+  position: fixed;
+  left: clamp(1rem, 4vw, 2rem);
+  bottom: calc(clamp(1rem, 4vw, 2rem) + env(safe-area-inset-bottom, 0px));
+  z-index: 95;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(8, 9, 10, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+}
+
+.sound-toggle:hover,
+.sound-toggle:focus-visible {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.4);
+  outline: none;
+}
+
+.sound-toggle--on {
+  color: #fff;
+}
+
+.sound-toggle__wave {
+  opacity: 0.16;
+  transition: opacity 0.3s ease;
+}
+
+.sound-toggle--on .sound-toggle__wave {
+  opacity: 0.9;
+  animation: sound-toggle-pulse 2.6s ease-in-out infinite;
+}
+
+.sound-toggle--on .sound-toggle__wave:last-of-type {
+  animation-delay: 0.35s;
+}
+
+@keyframes sound-toggle-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sound-toggle,
+  .sound-toggle__wave {
+    transition: none;
+  }
+  .sound-toggle--on .sound-toggle__wave {
+    animation: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Footer
+--------------------------------------------------------------------------- */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 2rem clamp(1.1rem, 4vw, 3rem);
+  padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
+  background: #000;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.45);
+  font-size: clamp(0.68rem, 1.1vw, 0.8rem);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 600px) {
+  .footer {
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    padding-left: 1.1rem;
+    padding-right: 1.1rem;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Rotate gate — shown on portrait phones; clears on rotation to landscape.
+--------------------------------------------------------------------------- */
+.rotate-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.4rem;
+  padding: 2rem;
+  text-align: center;
+  background: #060708;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.rotate-gate__phone {
+  width: 46px;
+  height: 82px;
+  border: 2px solid currentColor;
+  border-radius: 10px;
+  position: relative;
+  margin-bottom: 0.6rem;
+  animation: rotate-gate-turn 2.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+.rotate-gate__phone span {
+  position: absolute;
+  left: 50%;
+  bottom: 7px;
+  width: 16px;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transform: translateX(-50%);
+}
+
+@keyframes rotate-gate-turn {
+  0%,
+  15% {
+    transform: rotate(0deg);
+  }
+  50%,
+  85% {
+    transform: rotate(-90deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.rotate-gate__hint {
+  margin: 0;
+  font-size: clamp(1.1rem, 5.5vw, 1.5rem);
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+}
+
+.rotate-gate__sub {
+  margin: 0;
+  font-size: clamp(0.68rem, 3.4vw, 0.86rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.rotate-gate__note {
+  margin: 0.6rem 0 0;
+  max-width: 26ch;
+  font-size: clamp(0.6rem, 3vw, 0.72rem);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.rotate-gate__skip {
+  margin-top: 0.4rem;
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: inherit;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+.rotate-gate__skip:hover {
+  color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rotate-gate__phone {
+    animation: none;
+    transform: rotate(-45deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav,
+  .nav__socials,
+  .nav__social,
+  .nav__social::after,
+  .nav__contact-toggle,
+  .nav__caret {
+    transition: none;
+  }
+}
