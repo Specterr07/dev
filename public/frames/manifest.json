@@ -1,0 +1,144 @@
+{
+  "widths": [
+    1600,
+    2560,
+    3840
+  ],
+  "frames": [
+    {
+      "id": "01",
+      "stage": 1,
+      "name": "Resting",
+      "width": 7424,
+      "height": 2624,
+      "aspect": 2.8293,
+      "blur": "data:image/webp;base64,UklGRkAAAABXRUJQVlA4IDQAAADwAQCdASogAAsAA4BaJaQAAhItsUgiy8AA+/vvA79tp21OhucF9WcBQSszl+hozS2PVQAA"
+    },
+    {
+      "id": "02",
+      "stage": 2,
+      "name": "Preparing",
+      "width": 7424,
+      "height": 2624,
+      "aspect": 2.8293,
+      "blur": "data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAAAQAwCdASogAAsALrV2u12jqampiYC0S0gAAoLBmdiYoYAA+/vvA79tp23EW4I4dLeRk0sEzHPTPkcK3eqgAAAA"
+    },
+    {
+      "id": "03",
+      "stage": 3,
+      "name": "Full Draw",
+      "width": 7424,
+      "height": 2624,
+      "aspect": 2.8293,
+      "blur": "data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAAAQAwCdASogAAsALrV2u12jqampiYC0S0gAAoLBmdiYoYAA+/vvA9R3fOMHq1yizl9orHe3QAQ9oFo4+yW+AAAA"
+    },
+    {
+      "id": "04",
+      "stage": 4,
+      "name": "First Arrow_ part 1",
+      "width": 7424,
+      "height": 2624,
+      "aspect": 2.8293,
+      "blur": "data:image/webp;base64,UklGRkoAAABXRUJQVlA4ID4AAAAQAwCdASogAAsALrV2u12jqampiYC0S0gAAoK5vcK9vdAA+/vvA79tp3BHHCd3DTD8p/M6J4dqi2etXa4AAA=="
+    },
+    {
+      "id": "05",
+      "stage": 5,
+      "name": "First Arrow_ part 2",
+      "width": 7442,
+      "height": 2624,
+      "aspect": 2.8361,
+      "blur": "data:image/webp;base64,UklGRoYAAABXRUJQVlA4WAoAAAAQAAAAHwAACgAAQUxQSCAAAAABJ6AgbQPGv+V2x0ZExBcBYbZRVcZy/mr3juh/AADtH1ZQOCBAAAAAEAMAnQEqIAALAC61drtdo6mpqYmAtEtIAAKCub2fCIIAAPv77wPUd3zjB6tcos5faFIVDyYtl0bOTLLjDgAAAA=="
+    },
+    {
+      "id": "06",
+      "stage": 6,
+      "name": "Second Arrow_ part 1",
+      "width": 7424,
+      "height": 2624,
+      "aspect": 2.8293,
+      "blur": "data:image/webp;base64,UklGRkoAAABXRUJQVlA4ID4AAAAQAwCdASogAAsALrV2u12jqampiYC0S0gAAoK5vcIOO0AA+/vvA80JNvwoQDuV68bbQ+qzFWaCAYnez7wAAA=="
+    },
+    {
+      "id": "07",
+      "stage": 7,
+      "name": "Second Arrow_ part 2",
+      "width": 7442,
+      "height": 2624,
+      "aspect": 2.8361,
+      "blur": "data:image/webp;base64,UklGRoQAAABXRUJQVlA4WAoAAAAQAAAAHwAACgAAQUxQSCAAAAABJ6AgbQPGv+V2x0ZExBcBYbZRVcZy/mr3juh/AADtH1ZQOCA+AAAAUAMAnQEqIAALAC61drtdo6mpqYmAtEtIAAKCub3MMPZ+CoAA+/vvA9R3fOMHq1lWYt0R94DEqt10ZlqAAAA="
+    },
+    {
+      "id": "08",
+      "stage": 8,
+      "name": "Third Arrow_ part 1",
+      "width": 7424,
+      "height": 2624,
+      "aspect": 2.8293,
+      "blur": "data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAAAQAwCdASogAAsALrV2u12jqampiYC0S0gAAn/shkAWE7gA+/vvA9R3fNLY4YeM1HfYCZ/GP6oOYOPz9/vNqAAA"
+    },
+    {
+      "id": "09",
+      "stage": 9,
+      "name": "Third Arrow_ part 2",
+      "width": 7442,
+      "height": 2624,
+      "aspect": 2.8361,
+      "blur": "data:image/webp;base64,UklGRoQAAABXRUJQVlA4WAoAAAAQAAAAHwAACgAAQUxQSCAAAAABJ6AgbQPGv+V2x0ZExBcBYbZRVcZy/mr3juh/AADtH1ZQOCA+AAAAUAMAnQEqIAALAC61drtdo6mpqYmAtEtIAAKCub3MLRdBCAAA+/vvA9R3fOMHq1pS3rn80Xtjw4SaT8OFAAA="
+    },
+    {
+      "id": "10",
+      "stage": 10,
+      "name": "_I CAN DO IT ALL_",
+      "width": 7424,
+      "height": 2624,
+      "aspect": 2.8293,
+      "blur": "data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAABQAwCdASogAAsALrV2u12jqampiYC0S0gAA0jN/mF9W/SvkAD7++8D1Hd844qeHN+W2zkgA0DNWnULb5goAAAA"
+    },
+    {
+      "id": "11",
+      "stage": 11,
+      "name": "Intro 1",
+      "width": 7424,
+      "height": 2624,
+      "aspect": 2.8293,
+      "blur": "data:image/webp;base64,UklGRkAAAABXRUJQVlA4IDQAAADwAQCdASogAAsAA4BaJaQAAUFc3s+DvRAA+/vvA79tp23EW3ETPAWVwb5xMUryoxTWQAAA"
+    },
+    {
+      "id": "12",
+      "stage": 12,
+      "name": "Intro 2",
+      "width": 7424,
+      "height": 2624,
+      "aspect": 2.8293,
+      "blur": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAAAwAwCdASogAAsALrV2u12jqampiYC0S0gAAoK5vcQB/u7QAPv77wO/badwRxwndw0w/JyMOX9VWaOAAAA="
+    },
+    {
+      "id": "13",
+      "stage": 13,
+      "name": "Intro 3",
+      "width": 7424,
+      "height": 2624,
+      "aspect": 2.8293,
+      "blur": "data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAABwAwCdASogAAsAPu1Ct1apoqakGAEwHYlpAABBx0BXeqZI+EAA9h6McrhtBgcuLI3oElyXu1G3295FF3xpQAAA"
+    },
+    {
+      "id": "14",
+      "stage": 14,
+      "name": "Intro 4",
+      "width": 7424,
+      "height": 2624,
+      "aspect": 2.8293,
+      "blur": "data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAABwAwCdASogAAsAPu1Ct1apoqakGAEwHYlpAABBx0BXerYs1sAA9h6McrhtBgcuLI3oElyXu1G3xYidO4OPAAAA"
+    },
+    {
+      "id": "15",
+      "stage": 15,
+      "name": "Intro 5",
+      "width": 7424,
+      "height": 2624,
+      "aspect": 2.8293,
+      "blur": "data:image/webp;base64,UklGRlAAAABXRUJQVlA4IEQAAACwAwCdASogAAsAPu1orU2ppqSiMAgBMB2JaQAAQMdAV7qzOTuQwAD2HoxyuG0GBy4sjegSXJjb0kHU/CtuvbSn9yCgAA=="
+    }
+  ]
+}
