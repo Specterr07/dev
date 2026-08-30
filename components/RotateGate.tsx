@@ -43,21 +43,13 @@ export default function RotateGate() {
   const active = portrait && !skipped;
 
   useEffect(() => {
+    if (!active) return;
     const root = document.documentElement;
-    if (active) {
-      const prev = root.style.overflow;
-      root.style.overflow = 'hidden';
-      return () => {
-        root.style.overflow = prev;
-      };
-    }
-    // when the gate goes away, tell pinned sections to re-measure the (now
-    // correct) viewport.
-    const t = setTimeout(
-      () => window.dispatchEvent(new Event('app:remeasure')),
-      120
-    );
-    return () => clearTimeout(t);
+    const prev = root.style.overflow;
+    root.style.overflow = 'hidden';
+    return () => {
+      root.style.overflow = prev;
+    };
   }, [active]);
 
   if (!active) return null;

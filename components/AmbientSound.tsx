@@ -2,151 +2,199 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-const STORAGE_KEY = 'vp:sound';
-// Kept low on purpose — it's a bed under everything, not a feature.
-const VOLUME = 0.18;
-// Long, gentle ramp when it starts; quicker when muted.
-const FADE_IN_MS = 2800;
-const FADE_OUT_MS = 700;
+const VOL_KEY = 'vp:vol';
+const DEFAULT_VOL = 0.15; // starts quiet; the visitor takes it from here
+const FADE_IN_MS = 2600;
 
 export default function AmbientSound() {
   const audioRef = useRef<HTMLAudioElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number | null>(null);
-  const [canPlay, setCanPlay] = useState(false);
-  const [on, setOn] = useState(false);
+  const closeTimer = useRef<number | undefined>(undefined);
+  const started = useRef(false);
+  const volRef = useRef(DEFAULT_VOL);
 
-  const fadeTo = useCallback(
-    (target: number, ms: number, done?: () => void) => {
-      const a = audioRef.current;
-      if (!a) return;
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      const from = a.volume;
-      const t0 = performance.now();
-      const step = (now: number) => {
-        const k = Math.min(1, (now - t0) / ms);
-        // ease-in-out so the start doesn't feel like a linear ramp
-        const eased = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
-        a.volume = from + (target - from) * eased;
-        if (k < 1) rafRef.current = requestAnimationFrame(step);
-        else {
-          rafRef.current = null;
-          done?.();
-        }
-      };
-      rafRef.current = requestAnimationFrame(step);
-    },
-    []
-  );
+  const [ready, setReady] = useState(false);
+  const [vol, setVol] = useState(DEFAULT_VOL);
+  const [open, setOpen] = useState(false);
+  const [coarse, setCoarse] = useState(false);
 
-  // init: start silent; show the toggle once the file is confirmed loadable
-  useEffect(() => {
+  const fadeTo = useCallback((target: number, ms: number) => {
     const a = audioRef.current;
     if (!a) return;
-    a.volume = 0;
-    const ok = () => setCanPlay(true);
-    const fail = () => setCanPlay(false);
-    // metadata resolving means the source is valid & supported; canplay means
-    // it's buffered enough to start. Either is enough to reveal the control.
-    a.addEventListener('loadedmetadata', ok);
-    a.addEventListener('canplay', ok);
-    a.addEventListener('error', fail);
-    a.load(); // hidden <audio preload> can otherwise sit idle until interaction
-    if (a.readyState >= 1) ok();
-    return () => {
-      a.removeEventListener('loadedmetadata', ok);
-      a.removeEventListener('canplay', ok);
-      a.removeEventListener('error', fail);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    const from = a.volume;
+    const t0 = performance.now();
+    const tick = (now: number) => {
+      const k = Math.min(1, (now - t0) / ms);
+      const e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+      a.volume = from + (target - from) * e;
+      if (k < 1) rafRef.current = requestAnimationFrame(tick);
+      else rafRef.current = null;
     };
+    rafRef.current = requestAnimationFrame(tick);
   }, []);
 
-  // restore preference; browsers won't autoplay, so if it was "on" we arm
-  // playback for the first user gesture anywhere on the page
+  // init: read persisted volume + pointer type, prep the element
   useEffect(() => {
-    let pref: string | null = null;
+    setCoarse(window.matchMedia('(pointer: coarse)').matches);
     try {
-      pref = localStorage.getItem(STORAGE_KEY);
+      const v = parseFloat(localStorage.getItem(VOL_KEY) ?? '');
+      if (!Number.isNaN(v)) {
+        const clamped = Math.min(1, Math.max(0, v));
+        setVol(clamped);
+        volRef.current = clamped;
+      }
     } catch {
       /* private mode */
     }
-    if (pref !== 'on') return;
-    const start = () => setOn(true);
-    const evs = ['pointerdown', 'keydown', 'touchstart', 'wheel'] as const;
-    evs.forEach((e) => window.addEventListener(e, start, { once: true, passive: true }));
-    return () => evs.forEach((e) => window.removeEventListener(e, start));
-  }, []);
 
-  // apply on/off
-  useEffect(() => {
     const a = audioRef.current;
     if (!a) return;
+    a.volume = 0;
+    const ok = () => setReady(true);
+    a.addEventListener('loadedmetadata', ok);
+    a.addEventListener('canplay', ok);
+    a.addEventListener('error', () => setReady(false));
+    a.load();
+    if (a.readyState >= 1) ok();
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
+  // browsers block autoplay: start on the first interaction anywhere, then
+  // ease up to the visitor's volume.
+  useEffect(() => {
+    const start = () => {
+      if (started.current) return;
+      started.current = true;
+      const a = audioRef.current;
+      if (!a) return;
+      a.play()
+        .then(() => fadeTo(volRef.current, FADE_IN_MS))
+        .catch(() => {
+          started.current = false;
+        });
+    };
+    const evs = ['pointerdown', 'keydown', 'touchstart', 'wheel'] as const;
+    evs.forEach((e) =>
+      window.addEventListener(e, start, { passive: true })
+    );
+    return () => evs.forEach((e) => window.removeEventListener(e, start));
+  }, [fadeTo]);
+
+  // slider changes -> live volume + persist
+  useEffect(() => {
+    volRef.current = vol;
     try {
-      localStorage.setItem(STORAGE_KEY, on ? 'on' : 'off');
+      localStorage.setItem(VOL_KEY, String(vol));
     } catch {
       /* ignore */
     }
-    if (on) {
-      a.play()
-        .then(() => fadeTo(VOLUME, FADE_IN_MS))
-        .catch(() => setOn(false)); // needs a gesture, or no file
-    } else {
-      fadeTo(0, FADE_OUT_MS, () => a.pause());
-    }
-  }, [on, fadeTo]);
+    if (started.current) fadeTo(vol, 240);
+  }, [vol, fadeTo]);
 
-  // don't play into a hidden tab
+  // pause into a hidden tab
   useEffect(() => {
     const onVis = () => {
       const a = audioRef.current;
-      if (!a) return;
+      if (!a || !started.current) return;
       if (document.hidden) a.pause();
-      else if (on) a.play().catch(() => {});
+      else a.play().catch(() => {});
     };
     document.addEventListener('visibilitychange', onVis);
     return () => document.removeEventListener('visibilitychange', onVis);
-  }, [on]);
+  }, []);
+
+  // click-away closes the slider (mobile)
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: PointerEvent) => {
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    window.addEventListener('pointerdown', onDown);
+    return () => window.removeEventListener('pointerdown', onDown);
+  }, [open]);
+
+  const openNow = () => {
+    window.clearTimeout(closeTimer.current);
+    setOpen(true);
+  };
+  const closeSoon = () => {
+    closeTimer.current = window.setTimeout(() => setOpen(false), 200);
+  };
+
+  const pct = Math.round(vol * 100);
+  const muted = vol <= 0.001;
 
   return (
     <>
-      {/* metadata-only: the 4 MB file isn't fetched until the visitor actually
-          turns sound on */}
-      <audio
-        ref={audioRef}
-        src="/audio/ambience.mp3"
-        loop
-        preload="metadata"
-        hidden
-      />
-      {/* If you also have an .ogg, use <source> tags instead of the src above. */}
+      <audio ref={audioRef} src="/audio/ambience.mp3" loop preload="metadata" hidden />
 
-      {canPlay && (
-        <button
-          type="button"
-          className={`sound-toggle${on ? ' sound-toggle--on' : ''}`}
-          aria-pressed={on}
-          aria-label={on ? 'Mute ambient sound' : 'Play ambient sound'}
-          onClick={() => setOn((v) => !v)}
+      {ready && (
+        <div
+          ref={wrapRef}
+          className={`sound${open ? ' sound--open' : ''}`}
+          onMouseEnter={openNow}
+          onMouseLeave={closeSoon}
         >
-          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-            <path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor" />
-            <path
-              className="sound-toggle__wave"
-              d="M15.5 8.6a4.6 4.6 0 0 1 0 6.8"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.6"
-              strokeLinecap="round"
+          <button
+            type="button"
+            className={`sound__btn${muted ? ' is-muted' : ''}`}
+            aria-label="Ambient sound volume"
+            aria-expanded={open}
+            onClick={() => setOpen((o) => (coarse ? !o : true))}
+          >
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+              <path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor" />
+              {muted ? (
+                <path
+                  d="M16 9.5l6 5M22 9.5l-6 5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                />
+              ) : (
+                <>
+                  <path
+                    className="sound__wave"
+                    d="M15.5 8.6a4.6 4.6 0 0 1 0 6.8"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    className="sound__wave"
+                    d="M18.2 6a8.4 8.4 0 0 1 0 12"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                  />
+                </>
+              )}
+            </svg>
+          </button>
+
+          <div className="sound__slider">
+            <input
+              type="range"
+              min={0}
+              max={100}
+              value={pct}
+              aria-label="Ambient volume"
+              onChange={(e) => setVol(Number(e.target.value) / 100)}
+              style={{
+                background: `linear-gradient(90deg, #fff ${pct}%, rgba(255,255,255,0.22) ${pct}%)`,
+              }}
             />
-            <path
-              className="sound-toggle__wave"
-              d="M18.2 6a8.4 8.4 0 0 1 0 12"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-            />
-          </svg>
-        </button>
+          </div>
+        </div>
       )}
     </>
   );

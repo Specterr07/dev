@@ -10,16 +10,13 @@ const LINKS = [
 
 export default function SiteNav() {
   const [solid, setSolid] = useState(false);
-  const [progress, setProgress] = useState(0);
   const [open, setOpen] = useState(false);
   const contactRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => {
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      setProgress(max > 0 ? Math.min(1, window.scrollY / max) : 0);
-      // solidify once the first screen of the cinematic hero is behind us
-      setSolid(window.scrollY > window.innerHeight * 0.6);
+      // solidify once you've scrolled off the hero toward the footer
+      setSolid(window.scrollY > window.innerHeight * 0.5);
     };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -94,8 +91,6 @@ export default function SiteNav() {
           <span>Contact</span>
         </button>
       </div>
-
-      <div className="nav__progress" style={{ transform: `scaleX(${progress})` }} />
     </header>
   );
 }

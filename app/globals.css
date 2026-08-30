@@ -44,30 +44,228 @@ img {
   }
 }
 
-/* ---------------------------------------------------------------------------
-   Custom scrollbar — thin, monochrome, on-theme (no browser default chrome).
---------------------------------------------------------------------------- */
+/* No native scrollbar — the slide indicator is the progress affordance.
+   The page still scrolls with wheel / trackpad / keys to reach the footer. */
 html {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
 }
 
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
 }
-::-webkit-scrollbar-track {
-  background: transparent;
+
+/* ---------------------------------------------------------------------------
+   The hero deck — one full-viewport slide surface (not a pinned scroll).
+--------------------------------------------------------------------------- */
+.deck {
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  overflow: hidden;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* let vertical drags scroll the page (to the footer); horizontal is ours */
+  touch-action: pan-y;
 }
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.18);
+
+.deck__vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 22vw 6vw rgba(0, 0, 0, 0.5);
+}
+
+.deck__blink {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease;
+}
+.deck__blink.is-on {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .deck__blink {
+    transition: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Slide indicator — Apple-OS-page style: ticks + a filling active pill +
+   play/pause. Vertical on the right (desktop), horizontal at the bottom
+   (touch / mobile).
+--------------------------------------------------------------------------- */
+.slides {
+  position: fixed;
+  right: clamp(0.8rem, 2.4vw, 2rem);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  pointer-events: none;
+}
+.slides > * {
+  pointer-events: auto;
+}
+
+.slides__ticks {
+  list-style: none;
+  margin: 0;
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
   border-radius: 999px;
-  border: 3px solid transparent;
-  background-clip: content-box;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(8, 9, 10, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.34);
-  background-clip: content-box;
+
+.slides__tick {
+  display: flex;
+}
+
+.slides__dot {
+  position: relative;
+  display: block;
+  width: 6px;
+  height: 6px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  overflow: hidden;
+  transition: height 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    width 0.35s cubic-bezier(0.22, 1, 0.36, 1), background 0.3s ease;
+}
+.slides__dot::after {
+  /* generous invisible hit area */
+  content: '';
+  position: absolute;
+  inset: -9px;
+}
+.slides__dot:hover {
+  background: rgba(255, 255, 255, 0.7);
+}
+.slides__tick.is-active .slides__dot {
+  height: 38px;
+  background: rgba(255, 255, 255, 0.26);
+}
+
+.slides__fill {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  border-radius: inherit;
+  transform-origin: top;
+  transform: scaleY(0);
+  animation: slides-fill-y var(--dur, 4800ms) linear forwards;
+  animation-play-state: paused;
+}
+.slides__fill.is-playing {
+  animation-play-state: running;
+}
+@keyframes slides-fill-y {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+.slides__play {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  background: rgba(10, 11, 12, 0.62);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: rgba(255, 255, 255, 0.92);
+  cursor: pointer;
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+.slides__play:hover,
+.slides__play:focus-visible {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.42);
+  outline: none;
+}
+
+/* touch / mobile: move to the bottom, lay it out horizontally */
+@media (pointer: coarse) {
+  .slides {
+    right: auto;
+    top: auto;
+    left: 50%;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 0.9rem);
+    transform: translateX(-50%);
+    flex-direction: row;
+  }
+  .slides__ticks {
+    flex-direction: row;
+    padding: 7px 8px;
+  }
+  .slides__dot {
+    transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      background 0.3s ease;
+  }
+  .slides__tick.is-active .slides__dot {
+    height: 6px;
+    width: 38px;
+  }
+  .slides__fill {
+    transform-origin: left;
+    transform: scaleX(0);
+    animation-name: slides-fill-x;
+  }
+  @keyframes slides-fill-x {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slides__dot {
+    transition: none;
+  }
+  .slides__fill {
+    animation: none;
+  }
 }
 
 /* ---------------------------------------------------------------------------
@@ -115,18 +313,6 @@ html {
   line-height: 1;
   opacity: 0.8;
   transform: translateY(-0.05em);
-}
-
-/* scroll-progress hairline pinned to the bottom of the bar */
-.nav__progress {
-  position: absolute;
-  left: 0;
-  bottom: -1px;
-  height: 1px;
-  width: 100%;
-  background: rgba(255, 255, 255, 0.55);
-  transform-origin: left;
-  transform: scaleX(0);
 }
 
 /* ---------------------------------------------------------------------------
@@ -293,145 +479,116 @@ html {
 }
 
 /* ---------------------------------------------------------------------------
-   Scroll hint — the classic animated mouse-wheel above a "Scroll" label,
-   as used on most animation portfolios. Fades out on first scroll (GSAP
-   drives its opacity).
+   Ambient sound — a highlighted speaker button, bottom-left. Hover (desktop)
+   or tap (mobile) slides a volume slider out to its right. Music starts on
+   the first interaction at low volume; the slider is the control.
 --------------------------------------------------------------------------- */
-.scroll-hint {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 3.4vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.85rem;
-  pointer-events: none;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.scroll-hint__mouse {
-  width: 24px;
-  height: 38px;
-  border: 1.5px solid currentColor;
-  border-radius: 12px;
-  display: flex;
-  justify-content: center;
-  padding-top: 6px;
-  opacity: 0.85;
-}
-
-.scroll-hint__wheel {
-  width: 3px;
-  height: 7px;
-  border-radius: 2px;
-  background: currentColor;
-  animation: scroll-hint-wheel 1.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
-}
-
-@keyframes scroll-hint-wheel {
-  0% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-  70% {
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(12px);
-    opacity: 0;
-  }
-}
-
-.scroll-hint__label {
-  font-size: clamp(0.62rem, 1vw, 0.82rem);
-  letter-spacing: 0.35em;
-  text-transform: uppercase;
-}
-
-/* Phone: nudge clear of the home indicator and shrink a touch. */
-@media (max-width: 600px) {
-  .scroll-hint {
-    bottom: max(2.4vh, env(safe-area-inset-bottom, 0px));
-    gap: 0.6rem;
-  }
-  .scroll-hint__mouse {
-    width: 21px;
-    height: 33px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .scroll-hint__wheel {
-    animation: none;
-  }
-}
-
-/* ---------------------------------------------------------------------------
-   Ambient sound toggle — fixed bottom-left, opposite the scroll hint.
---------------------------------------------------------------------------- */
-.sound-toggle {
+.sound {
   position: fixed;
-  left: clamp(1rem, 4vw, 2rem);
-  bottom: calc(clamp(1rem, 4vw, 2rem) + env(safe-area-inset-bottom, 0px));
+  left: clamp(0.9rem, 4vw, 2rem);
+  bottom: calc(clamp(0.9rem, 4vw, 2rem) + env(safe-area-inset-bottom, 0px));
   z-index: 95;
-  width: 40px;
-  height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.sound__btn {
+  flex: none;
+  width: 42px;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 999px;
-  background: rgba(8, 9, 10, 0.4);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  color: rgba(255, 255, 255, 0.55);
+  background: rgba(12, 13, 14, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.04);
   cursor: pointer;
-  transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+  transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease;
 }
-
-.sound-toggle:hover,
-.sound-toggle:focus-visible {
+.sound__btn:hover,
+.sound__btn:focus-visible {
   color: #fff;
-  border-color: rgba(255, 255, 255, 0.4);
+  border-color: rgba(255, 255, 255, 0.55);
+  background: rgba(16, 17, 18, 0.82);
   outline: none;
 }
-
-.sound-toggle--on {
-  color: #fff;
+.sound__btn.is-muted {
+  color: rgba(255, 255, 255, 0.55);
 }
 
-.sound-toggle__wave {
-  opacity: 0.16;
-  transition: opacity 0.3s ease;
+.sound__wave {
+  animation: sound-wave 2.6s ease-in-out infinite;
 }
-
-.sound-toggle--on .sound-toggle__wave {
-  opacity: 0.9;
-  animation: sound-toggle-pulse 2.6s ease-in-out infinite;
-}
-
-.sound-toggle--on .sound-toggle__wave:last-of-type {
+.sound__wave:last-of-type {
   animation-delay: 0.35s;
 }
-
-@keyframes sound-toggle-pulse {
+@keyframes sound-wave {
   0%,
   100% {
-    opacity: 0.35;
+    opacity: 0.5;
   }
   50% {
-    opacity: 0.95;
+    opacity: 1;
   }
+}
+.sound__btn.is-muted .sound__wave {
+  animation: none;
+}
+
+.sound__slider {
+  overflow: hidden;
+  width: 0;
+  opacity: 0;
+  transition: width 0.32s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.24s ease,
+    margin-left 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.sound--open .sound__slider {
+  width: clamp(96px, 26vw, 132px);
+  opacity: 1;
+  margin-left: 0.7rem;
+}
+
+.sound__slider input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+  outline: none;
+  cursor: pointer;
+}
+.sound__slider input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  border: 0;
+  border-radius: 999px;
+  background: #fff;
+  cursor: pointer;
+}
+.sound__slider input[type='range']::-moz-range-thumb {
+  width: 13px;
+  height: 13px;
+  border: 0;
+  border-radius: 999px;
+  background: #fff;
+  cursor: pointer;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sound-toggle,
-  .sound-toggle__wave {
+  .sound__btn,
+  .sound__slider {
     transition: none;
   }
-  .sound-toggle--on .sound-toggle__wave {
+  .sound__wave {
     animation: none;
   }
 }
