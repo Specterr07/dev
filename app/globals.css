@@ -70,10 +70,18 @@ body::-webkit-scrollbar {
 }
 
 /* ---------------------------------------------------------------------------
-   The hero deck — one full-viewport slide surface (not a pinned scroll).
+   The hero deck.
+   Desktop: .deck-wrap is a tall spacer, .deck sticks — scroll scrubs the
+   sequence. Mobile: .deck-wrap collapses, .deck is one screen — swipe /
+   autoplay drive it.
 --------------------------------------------------------------------------- */
-.deck {
+.deck-wrap {
   position: relative;
+}
+
+.deck {
+  position: sticky;
+  top: 0;
   width: 100%;
   height: 100svh;
   overflow: hidden;
@@ -81,7 +89,7 @@ body::-webkit-scrollbar {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* let vertical drags scroll the page (to the footer); horizontal is ours */
+  /* let vertical drags scroll the page; horizontal swipes are ours (mobile) */
   touch-action: pan-y;
 }
 
@@ -92,21 +100,14 @@ body::-webkit-scrollbar {
   box-shadow: inset 0 0 22vw 6vw rgba(0, 0, 0, 0.5);
 }
 
+/* opacity is driven inline (scroll position on desktop, a short JS tween on
+   mobile) so it never lags the scroll. */
 .deck__blink {
   position: absolute;
   inset: 0;
   background: #000;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 200ms ease;
-}
-.deck__blink.is-on {
-  opacity: 1;
-}
-@media (prefers-reduced-motion: reduce) {
-  .deck__blink {
-    transition: none;
-  }
 }
 
 /* ---------------------------------------------------------------------------
@@ -189,6 +190,10 @@ body::-webkit-scrollbar {
 }
 .slides__fill.is-playing {
   animation-play-state: running;
+}
+/* desktop scrub: no animation — transform is set inline from scroll progress */
+.slides__fill--scrub {
+  animation: none;
 }
 @keyframes slides-fill-y {
   from {

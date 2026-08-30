@@ -6,10 +6,12 @@ import SlideIndicator from '@/components/SlideIndicator';
 
 // --- tuning knobs ---------------------------------------------------------
 const N = FRAMES.length;
-const SLIDE_MS = 4800; // how long each stage holds before auto-advancing
-const BLINK_MS = 420; // fade-to-black-and-back on every change
-const SWIPE_PX = 45; // min horizontal drag (px) to change slide
-const RESUME_MS = 9000; // auto-resume autoplay this long after a manual nav
+const SEG_VH = 0.8; // desktop: scroll budget per stage (× viewport height)
+const HOLD = 0.62; // fraction of a segment the stage holds before the blink
+const SLIDE_MS = 4800; // mobile autoplay: hold per stage
+const BLINK_MS = 420; // mobile autoplay: fade-to-black-and-back
+const SWIPE_PX = 45; // mobile: min horizontal drag to change slide
+const RESUME_MS = 9000; // mobile: auto-resume autoplay after a manual nav
 // -----------------------------------------------------------------------
 
 function preloadAll() {
@@ -26,16 +28,23 @@ function preloadAll() {
   });
 }
 
-export default function CinematicSequence() {
-  const [index, setIndex] = useState(0);
-  const [playing, setPlaying] = useState(true);
-  const [blinking, setBlinking] = useState(false);
-  const [inView, setInView] = useState(true);
-  const [reduce, setReduce] = useState(false);
+const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
 
+export default function CinematicSequence() {
+  const [coarse, setCoarse] = useState(false); // touch device -> swipe deck
+  const [reduce, setReduce] = useState(false);
+  const [index, setIndex] = useState(0);
+  const [fill, setFill] = useState(0); // 0..1 progress within the current slide
+  const [playing, setPlaying] = useState(true); // mobile autoplay only
+  const [blinking, setBlinking] = useState(false); // mobile autoplay only
+  const [inView, setInView] = useState(true); // mobile autoplay only
+
+  const wrapRef = useRef<HTMLDivElement>(null);
   const deckRef = useRef<HTMLElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
-  const indexRef = useRef(index);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const indexRef = useRef(0);
+  const rafRef = useRef<number | null>(null);
   const blinkTimers = useRef<number[]>([]);
   const resumeTimer = useRef<number | undefined>(undefined);
 
@@ -43,16 +52,22 @@ export default function CinematicSequence() {
     indexRef.current = index;
   }, [index]);
 
-  // respect reduced motion: no autoplay, instant cuts
+  // media queries
   useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const mqC = window.matchMedia('(pointer: coarse)');
+    const mqR = window.matchMedia('(prefers-reduced-motion: reduce)');
     const sync = () => {
-      setReduce(mq.matches);
-      if (mq.matches) setPlaying(false);
+      setCoarse(mqC.matches);
+      setReduce(mqR.matches);
+      if (mqR.matches) setPlaying(false);
     };
     sync();
-    mq.addEventListener('change', sync);
-    return () => mq.removeEventListener('change', sync);
+    mqC.addEventListener('change', sync);
+    mqR.addEventListener('change', sync);
+    return () => {
+      mqC.removeEventListener('change', sync);
+      mqR.removeEventListener('change', sync);
+    };
   }, []);
 
   useEffect(() => {
@@ -68,18 +83,83 @@ export default function CinematicSequence() {
     im.alt = FRAMES[index].name;
   }, [index]);
 
-  // don't run the timer while the hero is scrolled off-screen
+  const setOverlay = (o: number) => {
+    if (overlayRef.current) overlayRef.current.style.opacity = String(o);
+  };
+
+  // ===== DESKTOP: scroll-to-animate =====================================
   useEffect(() => {
-    const el = deckRef.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([e]) => setInView(e.isIntersecting && e.intersectionRatio > 0.35),
-      { threshold: [0, 0.35, 0.7] }
-    );
-    io.observe(el);
-    return () => io.disconnect();
+    if (coarse) return;
+    setOverlay(0);
+
+    const compute = () => {
+      const wrap = wrapRef.current;
+      if (!wrap) return;
+      const total = wrap.offsetHeight - window.innerHeight;
+      const scrolled = -wrap.getBoundingClientRect().top;
+      const p = clamp01(total > 0 ? scrolled / total : 0);
+      const t = Math.min(p * N, N - 0.0001);
+      const seg = Math.floor(t);
+      const frac = t - seg;
+
+      let showIndex: number;
+      let f: number;
+      let blink: number;
+      if (frac < HOLD) {
+        showIndex = seg;
+        f = frac / HOLD;
+        blink = 0;
+      } else {
+        const b = (frac - HOLD) / (1 - HOLD); // 0..1 across the blink
+        if (reduce) {
+          showIndex = b < 0.5 ? seg : Math.min(seg + 1, N - 1);
+          f = b < 0.5 ? 1 : 0;
+          blink = 0;
+        } else {
+          blink = 1 - Math.abs(b - 0.5) * 2;
+          showIndex = b < 0.5 ? seg : Math.min(seg + 1, N - 1);
+          f = b < 0.5 ? 1 : 0;
+        }
+      }
+
+      setOverlay(blink);
+      setFill(f);
+      if (showIndex !== indexRef.current) {
+        indexRef.current = showIndex;
+        setIndex(showIndex);
+      }
+    };
+
+    const onScroll = () => {
+      if (rafRef.current) return;
+      rafRef.current = requestAnimationFrame(() => {
+        rafRef.current = null;
+        compute();
+      });
+    };
+    compute();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    };
+  }, [coarse, reduce]);
+
+  const scrollToSeg = useCallback((i: number) => {
+    const wrap = wrapRef.current;
+    if (!wrap) return;
+    const total = wrap.offsetHeight - window.innerHeight;
+    const top =
+      wrap.getBoundingClientRect().top +
+      window.scrollY +
+      (clamp01((i + 0.3) / N)) * total;
+    window.scrollTo({ top, behavior: 'smooth' });
   }, []);
 
+  // ===== MOBILE: auto-playing swipe deck ================================
   const clearBlink = useCallback(() => {
     blinkTimers.current.forEach(clearTimeout);
     blinkTimers.current = [];
@@ -96,9 +176,13 @@ export default function CinematicSequence() {
         return;
       }
       setBlinking(true);
+      setOverlay(1);
       blinkTimers.current.push(
         window.setTimeout(() => setIndex(next), BLINK_MS / 2),
-        window.setTimeout(() => setBlinking(false), BLINK_MS)
+        window.setTimeout(() => {
+          setBlinking(false);
+          setOverlay(0);
+        }, BLINK_MS)
       );
     },
     [reduce, clearBlink]
@@ -122,18 +206,26 @@ export default function CinematicSequence() {
 
   const onDot = useCallback(
     (i: number) => {
-      pauseThenResume();
-      goTo(i);
+      if (coarse) {
+        pauseThenResume();
+        goTo(i);
+      } else {
+        scrollToSeg(i);
+      }
     },
-    [pauseThenResume, goTo]
+    [coarse, pauseThenResume, goTo, scrollToSeg]
   );
 
   const onManualStep = useCallback(
     (dir: 1 | -1) => {
-      pauseThenResume();
-      step(dir);
+      if (coarse) {
+        pauseThenResume();
+        step(dir);
+      } else {
+        scrollToSeg(indexRef.current + dir);
+      }
     },
-    [pauseThenResume, step]
+    [coarse, pauseThenResume, step, scrollToSeg]
   );
 
   const togglePlay = useCallback(() => {
@@ -141,14 +233,27 @@ export default function CinematicSequence() {
     setPlaying((p) => !p);
   }, []);
 
-  // autoplay: one timeout per settled slide
+  // mobile autoplay timer
   useEffect(() => {
-    if (!playing || blinking || !inView || reduce) return;
+    if (!coarse || !playing || blinking || !inView || reduce) return;
     const t = window.setTimeout(() => step(1), SLIDE_MS);
     return () => clearTimeout(t);
-  }, [playing, blinking, inView, reduce, index, step]);
+  }, [coarse, playing, blinking, inView, reduce, index, step]);
 
-  // keyboard: Left / Right = prev / next
+  // mobile: pause the timer while the hero is scrolled off-screen
+  useEffect(() => {
+    if (!coarse) return;
+    const el = deckRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([e]) => setInView(e.isIntersecting && e.intersectionRatio > 0.35),
+      { threshold: [0, 0.35, 0.7] }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [coarse]);
+
+  // ===== shared: keyboard + swipe ======================================
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement | null;
@@ -160,15 +265,14 @@ export default function CinematicSequence() {
     return () => window.removeEventListener('keydown', onKey);
   }, [onManualStep]);
 
-  // pointer swipe (horizontal); vertical passes through to page scroll
   useEffect(() => {
+    if (!coarse) return; // swipe is a mobile affordance
     const el = deckRef.current;
     if (!el) return;
     let sx = 0;
     let sy = 0;
     let tracking = false;
     let horiz = false;
-
     const down = (e: PointerEvent) => {
       if (e.pointerType === 'mouse' && e.button !== 0) return;
       sx = e.clientX;
@@ -194,7 +298,6 @@ export default function CinematicSequence() {
     const cancel = () => {
       tracking = false;
     };
-
     el.addEventListener('pointerdown', down);
     el.addEventListener('pointermove', move);
     el.addEventListener('pointerup', up);
@@ -205,50 +308,61 @@ export default function CinematicSequence() {
       el.removeEventListener('pointerup', up);
       el.removeEventListener('pointercancel', cancel);
     };
-  }, [onManualStep]);
+  }, [coarse, onManualStep]);
 
   useEffect(
     () => () => {
       clearBlink();
       window.clearTimeout(resumeTimer.current);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
     },
     [clearBlink]
   );
 
   return (
-    <section
-      ref={deckRef}
-      className="deck"
-      aria-roledescription="carousel"
-      aria-label="Intro"
+    <div
+      ref={wrapRef}
+      className="deck-wrap"
+      style={
+        coarse
+          ? undefined
+          : { height: `${Math.round(N * SEG_VH * 100)}svh` }
+      }
     >
-      {/* single stage image; src swapped mid-blink. .stage-frame in globals.css
-          letterboxes it on landscape, cover-crops on portrait phones. */}
-      <img
-        ref={imgRef}
-        className="stage-frame"
-        src={frameSrc(FRAMES[0].id)}
-        srcSet={frameSrcSet(FRAMES[0].id)}
-        sizes="100vw"
-        alt={FRAMES[0].name}
-        draggable={false}
-        fetchPriority="high"
-      />
+      <section
+        ref={deckRef}
+        className="deck"
+        aria-roledescription="carousel"
+        aria-label="Intro"
+      >
+        {/* single stage image; src swapped mid-blink. .stage-frame in
+            globals.css letterboxes on landscape, cover-crops on portrait. */}
+        <img
+          ref={imgRef}
+          className="stage-frame"
+          src={frameSrc(FRAMES[0].id)}
+          srcSet={frameSrcSet(FRAMES[0].id)}
+          sizes="100vw"
+          alt={FRAMES[0].name}
+          draggable={false}
+          fetchPriority="high"
+        />
 
-      <div className="deck__vignette" aria-hidden="true" />
-      <div
-        className={`deck__blink${blinking ? ' is-on' : ''}`}
-        aria-hidden="true"
-      />
+        <div className="deck__vignette" aria-hidden="true" />
+        <div ref={overlayRef} className="deck__blink" aria-hidden="true" />
 
-      <SlideIndicator
-        count={N}
-        index={index}
-        playing={playing && inView && !reduce}
-        slideMs={SLIDE_MS}
-        onDot={onDot}
-        onTogglePlay={togglePlay}
-      />
-    </section>
+        <SlideIndicator
+          count={N}
+          index={index}
+          mode={coarse ? 'auto' : 'scrub'}
+          showPlay={coarse}
+          playing={playing && inView && !reduce}
+          slideMs={SLIDE_MS}
+          fill={fill}
+          onDot={onDot}
+          onTogglePlay={togglePlay}
+        />
+      </section>
+    </div>
   );
 }

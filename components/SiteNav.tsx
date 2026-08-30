@@ -15,8 +15,10 @@ export default function SiteNav() {
 
   useEffect(() => {
     const onScroll = () => {
-      // solidify once you've scrolled off the hero toward the footer
-      setSolid(window.scrollY > window.innerHeight * 0.5);
+      // solidify once the hero deck has scrolled up out of the way
+      const deck = document.querySelector('.deck');
+      const top = deck ? deck.getBoundingClientRect().top : -1;
+      setSolid(top < -12);
     };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
