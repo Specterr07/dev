@@ -586,7 +586,7 @@ html {
   max-width: 1200px;
   margin: 0 auto;
   color: rgba(255, 255, 255, 0.85);
-  font-family: var(--font-inter), sans-serif;
+  font-family: var(--font-aboreto), serif;
 }
 
 .story-bio {
