@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 const LINKS = [
   { label: 'Instagram', href: 'https://www.instagram.com/pengepengepopular/' },
   { label: 'LinkedIn', href: 'https://www.linkedin.com/in/vivek-patel-v7/' },
+  { label: 'GitHub', href: 'https://github.com/Specterr07' },
   { label: 'Mail', href: 'mailto:patelvivek.v7@gmail.com' },
 ];
 
