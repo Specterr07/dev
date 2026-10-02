@@ -1,4 +1,5 @@
 import CinematicSequence from '@/components/CinematicSequence';
+import ProfessionalStory from '@/components/ProfessionalStory';
 import SiteFooter from '@/components/SiteFooter';
 
 export default function Home() {
@@ -6,6 +7,7 @@ export default function Home() {
     <main>
       <span id="top" />
       <CinematicSequence />
+      <ProfessionalStory />
       <SiteFooter />
     </main>
   );

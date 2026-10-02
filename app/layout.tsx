@@ -15,7 +15,7 @@ const aboreto = Aboreto({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://vpcodes.in'),
-  title: 'Namaste! - VP',
+  title: 'Vivek Patel - software developer.',
   description:
     'Software developer, engineer, with a creative head. A scroll-driven cinematic portfolio.',
 };

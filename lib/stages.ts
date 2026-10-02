@@ -16,8 +16,8 @@ export interface FrameAsset {
 }
 
 // Play order (by Figma stage number): the "Namaste / I am Vivek Patel" intro
-// (11–15) runs first, then the "What can I do?" archery sequence (1–10).
-const PLAY_ORDER = [11, 12, 13, 14, 15, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+// (11–15) runs first, and stops there as per the new design.
+const PLAY_ORDER = [11, 12, 13, 14, 15];
 
 const byStage = new Map<number, FrameAsset>(
   (manifest.frames as FrameAsset[]).map((f) => [f.stage, f])
