@@ -444,8 +444,8 @@ html {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 2rem clamp(1.1rem, 4vw, 3rem);
-  padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
+  padding: 1rem clamp(1.1rem, 4vw, 3rem);
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
   background: #000;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   color: rgba(255, 255, 255, 0.45);
