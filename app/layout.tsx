@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Aboreto } from 'next/font/google';
+import { Aboreto, Inter } from 'next/font/google';
 import './globals.css';
 import SiteNav from '@/components/SiteNav';
 import RotateGate from '@/components/RotateGate';
@@ -10,6 +10,12 @@ const aboreto = Aboreto({
   subsets: ['latin'],
   weight: '400',
   variable: '--font-aboreto',
+  display: 'swap',
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
   display: 'swap',
 });
 
@@ -34,7 +40,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={aboreto.variable}>
+    <html lang="en" className={`${aboreto.variable} ${inter.variable}`}>
       <body>
         <RotateGate />
         <SiteNav />
