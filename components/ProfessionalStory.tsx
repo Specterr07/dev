@@ -82,10 +82,12 @@ export default function ProfessionalStory() {
           <p className="story-desc">
             A private photo backup service self-hosted on Oracle Cloud's Always
             Free ARM tier as a cost-free alternative to paid iCloud storage.
-            Deployed and orchestrated the application stack with Docker Compose,
-            reserved a static public IP, configured a DuckDNS subdomain with a Caddy
-            reverse proxy to serve the app over HTTPS, and set up the mobile app for
-            end-to-end photo sync.
+          </p>
+          <p className="story-desc" style={{ marginTop: '1rem' }}>
+            <strong style={{ color: '#fff', letterSpacing: '0.1em' }}>My contribution:</strong> Self-hosted Immich, deployed and orchestrated the application stack with Docker Compose, reserved a static public IP, configured a DuckDNS subdomain with a Caddy reverse proxy to serve the app over HTTPS, and set up the mobile app for end-to-end photo sync.
+          </p>
+          <p className="story-desc" style={{ marginTop: '1rem' }}>
+            <strong style={{ color: '#fff', letterSpacing: '0.1em' }}>The outcome:</strong> A cost-free alternative to paid iCloud storage with a stable, persistent endpoint and HTTPS photo syncing.
           </p>
           <div className="story-tags">
             <span className="story-tag">Docker</span>
@@ -125,11 +127,13 @@ export default function ProfessionalStory() {
           <p className="story-desc">
             A multi-channel personal assistant that takes input from 3 channels
             (Apple Watch Shortcut, Telegram bot and a React/TypeScript web app)
-            into one Flask backend with 14 REST API endpoints. Built an AI voice-notes
-            pipeline using OpenAI's Whisper model (large-v3-turbo via Groq),
-            compressed audio with ffmpeg, configured S3-compatible storage,
-            and shipped it with a multi-stage Docker build on Fly.io and a GitHub
-            Actions pipeline running 76 automated tests.
+            into one Flask backend with 14 REST API endpoints, documented in an OpenAPI 3 spec.
+          </p>
+          <p className="story-desc" style={{ marginTop: '1rem' }}>
+            <strong style={{ color: '#fff', letterSpacing: '0.1em' }}>My contribution:</strong> Designed the assistant, built an AI voice-notes pipeline using OpenAI's Whisper model (large-v3-turbo via Groq), compressed audio with ffmpeg, configured S3-compatible storage behind 1-hour presigned URLs, made the Telegram integration production-safe with secret-token webhook verification, idempotent handling of retried updates and single-use pairing codes, and shipped it with a multi-stage Docker build on Fly.io and a GitHub Actions pipeline.
+          </p>
+          <p className="story-desc" style={{ marginTop: '1rem' }}>
+            <strong style={{ color: '#fff', letterSpacing: '0.1em' }}>The outcome:</strong> A GitHub Actions pipeline that runs 76 automated tests, including contract tests for the Apple Watch API, and deploys only when they pass.
           </p>
           <div className="story-tags">
             <span className="story-tag">Python</span>
