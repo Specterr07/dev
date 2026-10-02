@@ -49,9 +49,7 @@ export default function ProfessionalStory() {
         A Software Developer who genuinely loves building things from full-stack
         web apps to self-hosted infrastructure and hardware connected side projects.
         I enjoy the entire lifecycle of a build: designing the system, shipping
-        it, and then figuring out how to deploy and run it myself. Currently
-        deepening my DevOps skills alongside my MERN stack work, I’m driven by
-        curiosity and a hands-on building mindset.
+        it, and then figuring out how to deploy and run it myself.
       </p>
 
       <div className="story-grid">
