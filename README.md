@@ -1,11 +1,11 @@
-# vpcodes.in — cinematic portfolio
+# vpcodes.in — portfolio
 
-A scroll-driven, single-page portfolio built as a **static Next.js (App Router)
-export**, deployed to GitHub Pages at [vpcodes.in](https://vpcodes.in).
+A single-page portfolio built as a **static Next.js (App Router) export**,
+deployed to GitHub Pages at [vpcodes.in](https://vpcodes.in).
 
-The hero is a 15-frame cinematic sequence (an archer, grayscale forest) that the
-visitor scrolls through; each stage holds, then a fade-to-black "blink" swaps to
-the next. Landscape only — phones get a "turn your device" screen.
+Black-and-white space theme: a warp starfield hero with a hand-drawn intro,
+then an about section with a playable voice note and two resume links. Works
+in portrait and landscape, phone and desktop.
 
 ## Develop
 
@@ -22,23 +22,30 @@ npm run build      # static export -> ./out  (next.config.js: output: 'export')
 
 ## Structure
 
-- `components/CinematicSequence.tsx` — the pinned scroll sequence: one `<img>`
-  whose `src` is swapped mid-blink, driven by a GSAP ScrollTrigger timeline.
-  Reduced-motion → plain vertical scroll through the frames.
-- `components/SiteNav.tsx` — nav + the inline-expanding Contact.
-- `components/RotateGate.tsx` — portrait-phone "rotate to landscape" screen.
+- `app/page.tsx` — hero → about → footer.
+- `app/layout.tsx` — fonts (Gaegu + JetBrains Mono via `next/font`), nav,
+  ambient sound.
+- `app/icon.svg` — favicon (the glasses logo).
+- `app/globals.css` — all styles; sections are commented.
+- `components/UfoHero.tsx` — the hero: canvas starfield (warp on arrival, slow
+  tinted drift, warp again on scroll), intro text that rises in, pinned with
+  GSAP ScrollTrigger while the text warps away. Tuning knobs at the top.
+- `components/AboutSection.tsx` — bio, voice note, and the two resume buttons
+  (`RESUMES` holds the Google Docs links).
+- `components/VoiceNote.tsx` — the voice-note player (waveform, seek, ducks the
+  ambient loop while playing).
+- `components/SiteNav.tsx` — glasses logo + the inline-expanding Contact menu.
 - `components/AmbientSound.tsx` — opt-in ambient loop + speaker toggle.
 - `components/SiteFooter.tsx`
-- `lib/stages.ts` — frame play order + `public/frames/manifest.json`.
-- `scripts/prepare-frames.mjs` — regenerates `public/frames/*.webp` (responsive
-  crops) from the raw Figma exports in `art-source/` (gitignored, kept locally).
-- `public/frames/` — the shipped WebP frame set (3 widths each).
-- `public/audio/ambience.mp3` — the ambient loop (see `public/audio/README.md`).
+- `public/audio/` — `ambience.mp3` and `voice-note.m4a` (see its README).
 - `public/CNAME`, `public/.nojekyll` — GitHub Pages custom domain + config.
+
+Legacy, no longer used by the site: `public/frames/` and
+`scripts/prepare-frames.mjs` (the old 15-frame archer sequence).
 
 ## Deploy
 
 Push to `main` → `.github/workflows/deploy.yml` builds the static export and
-publishes it via GitHub Pages (Actions source). Domain and HTTPS are already
-configured. The previous Vite portfolio is preserved on the
-`vite-portfolio-archive` branch.
+publishes it via GitHub Pages (Actions source). Pull requests into `main` run
+`.github/workflows/ci.yml` (build check). The previous Vite portfolio is
+preserved on the `vite-portfolio-archive` branch.
