@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from 'react';
 
 const LINKS = [
-  { label: 'Instagram', href: 'https://www.instagram.com/pengepengepopular/' },
   { label: 'LinkedIn', href: 'https://www.linkedin.com/in/vivek-patel-v7/' },
   { label: 'GitHub', href: 'https://github.com/Specterr07' },
   { label: 'Mail', href: 'mailto:patelvivek.v7@gmail.com' },
@@ -11,15 +10,12 @@ const LINKS = [
 
 export default function SiteNav() {
   const [solid, setSolid] = useState(false);
-  const [progress, setProgress] = useState(0);
   const [open, setOpen] = useState(false);
   const contactRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => {
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      setProgress(max > 0 ? Math.min(1, window.scrollY / max) : 0);
-      // solidify once the first screen of the cinematic hero is behind us
+      // solidify once the hero has been scrolled through
       setSolid(window.scrollY > window.innerHeight * 0.6);
     };
     onScroll();
@@ -56,11 +52,14 @@ export default function SiteNav() {
 
   return (
     <header className={`nav${solid ? ' nav--solid' : ''}`}>
-      <a href="#top" className="nav__brand" onClick={toTop}>
-        <span className="nav__mark" aria-hidden="true">
-          ▲
-        </span>
-        <span>Vivek Patel</span>
+      <a href="#top" className="nav__brand" onClick={toTop} aria-label="Vivek Patel, back to top">
+        {/* outline of the glasses Vivek wears — traces in on load */}
+        <svg viewBox="0 0 64 26" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path className="glasses__frame" pathLength={1} strokeWidth={1.8} d="M4.5 5.5C4.5 3.8 5.5 3 7.5 3H26C28 3 29 4 29 6V12C29 19 25.5 23 18.5 23H14.5C8.5 23 4.5 19 4.5 13Z" />
+          <path className="glasses__frame" pathLength={1} strokeWidth={1.8} d="M59.5 5.5C59.5 3.8 58.5 3 56.5 3H38C36 3 35 4 35 6V12C35 19 38.5 23 45.5 23H49.5C55.5 23 59.5 19 59.5 13Z" />
+          <path className="glasses__frame" pathLength={1} strokeWidth={2.2} d="M29 4.6H35M4.5 4.6L1.2 3.8M59.5 4.6L62.8 3.8" />
+          <path className="glasses__glare" strokeWidth={1.2} d="M10 17L19 8M42 17L51 8" />
+        </svg>
       </a>
 
       <div
@@ -96,7 +95,6 @@ export default function SiteNav() {
         </button>
       </div>
 
-      <div className="nav__progress" style={{ transform: `scaleX(${progress})` }} />
     </header>
   );
 }

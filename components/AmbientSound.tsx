@@ -94,6 +94,18 @@ export default function AmbientSound() {
     }
   }, [on, fadeTo]);
 
+  // duck under the voice note while it plays, then come back
+  useEffect(() => {
+    const onVoice = (e: Event) => {
+      const a = audioRef.current;
+      if (!a || !on) return;
+      const playing = (e as CustomEvent<{ playing: boolean }>).detail?.playing;
+      fadeTo(playing ? VOLUME * 0.12 : VOLUME, playing ? 400 : 1200);
+    };
+    window.addEventListener('voice-note', onVoice);
+    return () => window.removeEventListener('voice-note', onVoice);
+  }, [on, fadeTo]);
+
   // don't play into a hidden tab
   useEffect(() => {
     const onVis = () => {
