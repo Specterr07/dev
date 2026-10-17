@@ -1,57 +1,84 @@
-# Project Context: vpcodes.in - Cinematic Portfolio
+# Project Context: vpcodes.in — Portfolio
 
-## Project Overview
-This project is a scroll-driven, single-page portfolio for Vivek Patel. It is built as a **static Next.js (App Router)** export and deployed to GitHub Pages. It leverages **GSAP (GreenSock Animation Platform)** to create a cinematic, frame-by-frame animation sequence that responds to user scrolling.
+## Overview
+A single-page portfolio for Vivek Patel, built as a **static Next.js (App
+Router)** export and deployed to GitHub Pages. The look is black and white,
+outline-only drawings, with a space theme. Type is **Gaegu** (hand-drawn,
+for the name, bio and headings) and **JetBrains Mono** (everything else,
+the "engineer" voice).
 
-The website is designed primarily for landscape orientation. It acts as an interactive storytelling medium, using 15 hand-drawn style frames in a grayscale forest setting featuring an archer to introduce Vivek and his skills.
+The page has two sections:
 
-### Tech Stack
-- **Framework:** Next.js (App Router, Static Export)
-- **Library:** React 18, TypeScript
-- **Animation:** GSAP (ScrollTrigger)
-- **Styling:** CSS (Globals), Tailwind (if present, though mostly custom CSS/GSAP)
+1. **Hero** (`components/UfoHero.tsx`): a warp starfield with the intro text.
+2. **About** (`components/AboutSection.tsx`): bio, a voice note, and two
+   resume buttons. The resumes replace a separate work/experience section.
 
-## File Structure & Architecture
-- `app/page.tsx`: The main entry point rendering the sequence and footer.
-- `components/CinematicSequence.tsx`: The core component driving the scroll animation (explained below).
-- `lib/stages.ts`: Manages the playback order of the frames and defines responsive image `srcSet` generation.
-- `public/frames/`: Contains the static `.webp` image assets exported at different widths for responsive loading, along with `manifest.json`.
-- `public/audio/`: Contains ambient sounds played in the background.
+### Tech stack
+- Next.js (App Router, static export), React 18, TypeScript
+- GSAP ScrollTrigger (pinning and scroll-in reveals)
+- Canvas 2D (starfield), inline SVG (logo, icons)
+- Plain CSS in `app/globals.css` (no Tailwind)
 
-## How the Animation Works
-The "animated website" feel is achieved without using actual video files. Instead, it relies on a **15-frame image sequence** manipulated via scroll events using `GSAP ScrollTrigger`.
+## Hero
 
-### Animation Mechanism
-Inside `components/CinematicSequence.tsx`, the scroll behavior is orchestrated as follows:
-1. **Pinned Section:** As the user scrolls down, the viewport is "pinned" (fixed in place) using GSAP's `ScrollTrigger`.
-2. **Scroll Budgeting:** A scroll distance is budgeted to each stage based on the viewport height (e.g., `0.85 * 100vh` per frame on desktop).
-3. **The "Blink" Transition:** Instead of directly swapping images (which would feel like a choppy slideshow), the component overlays a black `div` (`overlayRef`). Between each frame, the screen fades to black (opacity 1) and back to transparent (opacity 0). 
-4. **Image Swapping:** At the exact midpoint of the blink (when the screen is completely black, `SWAP_OFFSET`), the `src` of the single `<img>` tag is swapped to the next frame. When the black overlay fades out, the new frame is revealed.
-5. **Preloading:** Frames are preloaded to ensure instantaneous swapping when the blink occurs, preventing layout shifts or blank screens.
-6. **Accessibility:** If the user's system prefers reduced motion, the pinning and blinking are disabled, and the frames are simply stacked vertically as standard scrollable panels.
+The intro copy:
 
-## The Slide Sequence in Detail
-There are 15 distinct frames. The playback order defined in `lib/stages.ts` does not follow the numerical IDs of the files. It is sequenced in two phases: the "Intro" (Frames 11-15) followed by the "Action/Skills" sequence (Frames 1-10).
+- `> greetings, earthling.`
+- **Hi, I'm Vivek Patel** (two lines on phones)
+- `a software engineer, beamed down to Mumbai.` (only "software engineer" is
+  underlined; the underline draws in)
 
-Here is what each slide explicitly says and depicts as the user scrolls:
+How it moves:
 
-### Phase 1: The Introduction
-The archer stands in the forest as text progressively appears on screen.
-- **Slide 1 (Frame 11):** `NAMASTE !`
-- **Slide 2 (Frame 12):** `NAMASTE, I AM VIVEK PATEL.`
-- **Slide 3 (Frame 13):** `NAMASTE, I AM VIVEK PATEL. A SOFTWARE DEVELOPER.`
-- **Slide 4 (Frame 14):** `NAMASTE, I AM VIVEK PATEL. A SOFTWARE DEVELOPER. AN ENGINEER.`
-- **Slide 5 (Frame 15):** `NAMASTE, I AM VIVEK PATEL. A SOFTWARE DEVELOPER. AN ENGINEER. WITH A CREATIVE HEAD.`
+1. **Arrival:** stars start in a fast warp and ease into a slow drift over about
+   1.6 s. The three lines rise in one after another, then the underline draws
+   and the "about me" cue fades in.
+2. **Scroll:** the hero is pinned for about 1.1 screens (`PIN_VH`). Scroll
+   progress speeds the stars back up into a warp while the text shrinks toward
+   the centre and fades, bottom line first. Scrolling back up reverses it.
+3. **Stars:** drawn on a `<canvas>` as streaks from a central vanishing point.
+   Mostly white, with some pale ice-blue and rose (`STAR_COLORS` in
+   `UfoHero.tsx`).
 
-### Phase 2: Action & Skills
-The archer begins to draw his bow and shoot arrows, answering the question of what he can do.
-- **Slide 6 (Frame 01):** `WHAT CAN I DO?` (The archer holds his bow, looking forward).
-- **Slide 7 (Frame 02):** *(No text)*. (The archer is seen preparing to draw his bow).
-- **Slide 8 (Frame 03):** *(No text)*. (The archer reaches full draw).
-- **Slide 9 (Frame 04):** `CODE?` (The archer holds the drawn arrow).
-- **Slide 10 (Frame 05):** `CODE.` (The arrow is released and flying).
-- **Slide 11 (Frame 06):** `MAKE VIDEOS?` (The archer is drawing a second arrow).
-- **Slide 12 (Frame 07):** `MAKE VIDEOS. CODE.` (The second arrow is released).
-- **Slide 13 (Frame 08):** `BE CREATIVE?` (The archer is drawing a third arrow).
-- **Slide 14 (Frame 09):** `BE CREATIVE. MAKE VIDEOS. CODE.` (The third arrow is released).
-- **Slide 15 (Frame 10):** `“I CAN DO THEM ALL”` (The archer is standing relaxed, having demonstrated his capabilities).
+Performance and accessibility:
+- Only `transform`/`opacity` are animated on DOM elements; the canvas draws at
+  most 2× device pixel ratio (1.5× on phones) and about 200 stars on phones
+  versus 420 on desktop.
+- The animation loop pauses when the hero is off screen or the tab is hidden.
+- Repeat visitors (`localStorage` key `vp_seen`) get the intro 4× faster.
+- `prefers-reduced-motion`: the text appears already in place and the stars
+  barely move.
+- The component and CSS class names still say "UFO" (`UfoHero`, `.ufo-hero__*`)
+  from an earlier version that had one; there's no UFO now.
+
+## About section
+
+- `> cat about.txt` then the bio in Gaegu.
+- **Voice note** (`components/VoiceNote.tsx`): a ~10 s clip
+  (`public/audio/voice-note.m4a`) telling visitors to check out the resumes.
+  Round play/pause button, a 48-bar waveform measured from the actual clip
+  (`PEAKS`; re-measure if the clip changes), click or drag to seek, keyboard
+  accessible through a hidden range input. A "psst… press play" hint disappears
+  after the first play. While it plays it fires a `voice-note` window event and
+  `AmbientSound` lowers the ambient loop, then brings it back.
+- `> ls ./resumes`, then two tilted outline cards that straighten and fill white
+  on hover:
+  - **Frontend** → the Frontend Developer resume (Google Doc)
+  - **Full-stack** → the Software Developer resume (Google Doc)
+  The links live in `RESUMES` in `AboutSection.tsx`. Both docs must be shared as
+  "Anyone with the link: Viewer".
+
+## Nav and branding
+- The logo is an outline of Vivek's glasses (traces itself in on load, with a
+  lens glare every few seconds). The same drawing is the favicon
+  (`app/icon.svg`).
+- The Contact menu expands inline to LinkedIn, GitHub and Mail.
+- The nav turns solid (blurred, with a thin border) after the hero.
+
+## History
+The site used to be a 15-frame scroll sequence of an archer in a grayscale
+forest ("Namaste, I am Vivek Patel…" then "What can I do?"), landscape only,
+with a rotate-your-phone screen and a Professional Story timeline. That was
+replaced by the current hero and about section. The frame images in
+`public/frames/` and `scripts/prepare-frames.mjs` are left over from it and are
+not used.
