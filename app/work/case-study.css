@@ -1,8 +1,9 @@
 /* ---------------------------------------------------------------------------
-   Case study: Mr. Plastic Repair (/work/mr-plastic-repair).
+   Case studies (/work/<slug>). Shared by every case study page: import it
+   with `import '../case-study.css'` from app/work/<slug>/page.tsx.
    Same language as the home page: black, 1.5px white outlines, Gaegu for
-   display, JetBrains Mono for everything else. The client's own colours only
-   appear inside the screenshots and the palette swatches.
+   display, JetBrains Mono for everything else. A client's own colours only
+   appear inside screenshots and palette swatches.
 --------------------------------------------------------------------------- */
 .cs {
   max-width: 1080px;

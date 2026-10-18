@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Anton } from 'next/font/google';
 import SiteFooter from '@/components/SiteFooter';
-import './case-study.css';
+import '../case-study.css';
 
 // Anton is Mr. Plastic Repair's headline face; only this page loads it (type sample in Design).
 const anton = Anton({ subsets: ['latin'], weight: '400', variable: '--font-anton', display: 'swap' });
