@@ -243,11 +243,14 @@ export default function MrPlasticRepairCaseStudy() {
       <section className="cs-section cs-next">
         <p className="cs-kicker">Keep exploring</p>
         <div className="resumes">
-          <div className="resume resume--soon" aria-label="Next project: Deccan Produce, case study coming soon">
+          <Link className="resume" href="/work/deccan-produce">
             <span className="resume__tag">next project</span>
             <span className="resume__name">Deccan Produce</span>
-            <span className="resume__meta">case study coming soon</span>
-          </div>
+            <span className="resume__meta">mobile-first site for an Indian fruit exporter</span>
+            <svg className="resume__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M7 17L17 7M9 7H17V15" />
+            </svg>
+          </Link>
           <a className="resume" href="mailto:patelvivek.v7@gmail.com">
             <span className="resume__tag">need a site like this?</span>
             <span className="resume__name">Say hi</span>

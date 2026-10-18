@@ -8,6 +8,12 @@ const WORK = [
     meta: 'phone-first site for a Toronto bumper welding shop',
     img: '/work/mr-plastic-repair/hero-desktop.webp',
   },
+  {
+    slug: 'deccan-produce',
+    name: 'Deccan Produce',
+    meta: 'mobile-first site for an Indian fruit exporter',
+    img: '/work/deccan-produce/hero-desktop.webp',
+  },
 ];
 
 export default function WorkSection() {
@@ -28,11 +34,6 @@ export default function WorkSection() {
             </svg>
           </Link>
         ))}
-        <div className="work-card work-card--soon">
-          <span className="resume__tag">next up</span>
-          <span className="work-card__name">Deccan Produce</span>
-          <span className="resume__meta">case study coming soon</span>
-        </div>
       </div>
     </section>
   );

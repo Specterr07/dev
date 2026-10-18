@@ -134,6 +134,10 @@
 .cs-caption { margin: 12px 0 0; font-size: 12px; color: rgba(255, 255, 255, 0.55); }
 .cs-caption--bright { color: #fff; }
 
+/* a desktop screenshot of an old site, when there's no phone shot of it */
+.cs-shot { border: 1.5px solid rgba(255, 255, 255, 0.5); border-radius: 16px; padding: 8px; transform: rotate(-1deg); }
+.cs-shot img { width: 100%; border-radius: 10px; }
+
 /* research cards: tilted outlines that straighten and fill on hover, like the resume buttons */
 .cs-insights {
   list-style: none;
@@ -207,7 +211,14 @@
 .cs-tried__word { font-family: var(--font-anton), sans-serif; color: #1c2aa8; font-size: 26px; line-height: 0.95; text-transform: uppercase; }
 .cs-tried__sticker { position: absolute; right: 12px; top: 14px; width: 30px; height: 30px; border-radius: 50%; background: #f7be00; }
 .cs-tried__pill { position: absolute; left: 12px; bottom: 12px; padding: 5px 10px; border-radius: 999px; background: #000; color: #fff; font-size: 9px; font-family: system-ui, sans-serif; }
+.cs-tried__shot { height: 150px; border-radius: 12px; overflow: hidden; }
+.cs-tried__shot img { width: 100%; height: 100%; object-fit: cover; }
 .cs-tried__label { margin: 10px 0 0; font-size: 12px; color: #fff; }
+
+/* type samples in a client's own faces (the page sets --font-fraunces / --font-barlow) */
+.cs-sample { margin: 8px 0 0; font-size: 40px; line-height: 1; color: #fff; }
+.cs-sample--fraunces { font-family: var(--font-fraunces), serif; font-weight: 600; }
+.cs-sample--barlow { font-family: var(--font-barlow), sans-serif; font-weight: 700; font-size: 28px; letter-spacing: 0.04em; text-transform: uppercase; }
 .cs-tried__label--no { opacity: 0.55; text-decoration: line-through; }
 
 .cs-oldnew { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 24px; margin-top: 16px; }
