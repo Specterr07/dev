@@ -663,3 +663,79 @@ html {
 @media (prefers-reduced-motion: reduce) {
   .vnote__bar, .vnote__play, .vnote__card, .resume { animation: none !important; transition: none; }
 }
+
+
+/* ---------------------------------------------------------------------------
+   Work — case study cards on the home page (components/WorkSection.tsx).
+   Same tilted outline cards as the resumes, with a screenshot on top.
+--------------------------------------------------------------------------- */
+.work {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0 clamp(1.1rem, 5vw, 3rem) 9rem;
+  text-align: center;
+}
+.work__grid {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: clamp(1rem, 3vw, 2rem);
+  flex-wrap: wrap;
+}
+.work-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  width: min(380px, 100%);
+  padding: 14px 56px 22px 14px;
+  border: 1.5px solid #fff;
+  border-radius: 20px;
+  color: #fff;
+  text-align: left;
+  text-decoration: none;
+  transform: rotate(-1.6deg);
+  transition: transform 0.35s cubic-bezier(0.3, 1.6, 0.5, 1), background 0.2s ease, color 0.2s ease;
+}
+.work-card__shot {
+  display: block;
+  width: calc(100% + 42px);
+  margin-bottom: 12px;
+  overflow: hidden;
+  border-radius: 10px;
+}
+.work-card__shot img { display: block; width: 100%; height: auto; }
+.work-card .resume__tag,
+.work-card .resume__meta,
+.work-card__name { padding-left: 10px; }
+.work-card__name {
+  font-family: var(--font-gaegu), cursive;
+  font-weight: 700;
+  font-size: 2.3rem;
+  line-height: 1;
+}
+.work-card .resume__arrow { top: auto; bottom: 22px; }
+a.work-card:hover,
+a.work-card:focus-visible { transform: rotate(0deg) translateY(-4px); background: #fff; color: #000; outline: none; }
+a.work-card:hover .resume__arrow { transform: translate(3px, -3px); }
+.work-card--soon {
+  align-self: center;
+  width: min(300px, 100%);
+  padding: 20px 24px;
+  border-style: dashed;
+  border-color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.75);
+  transform: rotate(1.6deg);
+}
+.work-card--soon .resume__tag,
+.work-card--soon .resume__meta,
+.work-card--soon .work-card__name { padding-left: 0; }
+
+@media (max-width: 600px) {
+  .work-card,
+  .work-card--soon { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .work-card { transition: none; }
+}

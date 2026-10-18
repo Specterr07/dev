@@ -45,6 +45,8 @@ export default function SiteNav() {
   }, [open]);
 
   const toTop = (e: React.MouseEvent) => {
+    // On a case study page the logo goes home; on the home page it scrolls to the top.
+    if (window.location.pathname !== '/') return;
     e.preventDefault();
     setOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -52,7 +54,7 @@ export default function SiteNav() {
 
   return (
     <header className={`nav${solid ? ' nav--solid' : ''}`}>
-      <a href="#top" className="nav__brand" onClick={toTop} aria-label="Vivek Patel, back to top">
+      <a href="/" className="nav__brand" onClick={toTop} aria-label="Vivek Patel, home">
         {/* outline of the glasses Vivek wears — traces in on load */}
         <svg viewBox="0 0 64 26" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <path className="glasses__frame" pathLength={1} strokeWidth={1.8} d="M4.5 5.5C4.5 3.8 5.5 3 7.5 3H26C28 3 29 4 29 6V12C29 19 25.5 23 18.5 23H14.5C8.5 23 4.5 19 4.5 13Z" />

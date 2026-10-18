@@ -1,5 +1,6 @@
 import UfoHero from '@/components/UfoHero';
 import AboutSection from '@/components/AboutSection';
+import WorkSection from '@/components/WorkSection';
 import SiteFooter from '@/components/SiteFooter';
 
 export default function Home() {
@@ -9,6 +10,8 @@ export default function Home() {
       <UfoHero />
       <span id="about" />
       <AboutSection />
+      <span id="work" />
+      <WorkSection />
       <SiteFooter />
     </main>
   );
