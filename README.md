@@ -44,6 +44,14 @@ npm run build      # static export -> ./out  (next.config.js: output: 'export')
   `deccan-produce`), sharing `app/work/case-study.css`. Each loads its own
   client fonts. Screenshots live in `public/work/<slug>/`.
 - `components/AmbientSound.tsx` — opt-in ambient loop + speaker toggle.
+- `lib/seo.ts` — link previews: `socialMeta()` builds each page's Open Graph,
+  Twitter card and canonical URL; `OG_IMAGE` points at `public/og.png`.
+- `app/robots.ts` → `/robots.txt`, `app/sitemap.ts` → `/sitemap.xml` (add new
+  case study pages to `PAGES` there).
+- `public/llms.txt` — Markdown summary of the portfolio for LLMs
+  ([llmstxt.org](https://llmstxt.org)). Update it when the site's content changes.
+- `public/og.png` — the 1200×630 link-preview image; its source is
+  `scripts/og/og-image.html`.
 - `components/SiteFooter.tsx`
 - `public/audio/` — `ambience.mp3` and `voice-note.m4a` (see its README).
 - `public/CNAME`, `public/.nojekyll` — GitHub Pages custom domain + config.

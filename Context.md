@@ -108,6 +108,25 @@ Performance and accessibility:
   home page.
 - The nav turns solid (blurred, with a thin border) after the hero.
 
+## SEO, link previews and LLMs
+
+- **Link previews:** every page gets Open Graph and Twitter-card tags plus a
+  canonical URL from `socialMeta()` in `lib/seo.ts`. Next merges metadata
+  shallowly, so a page that sets its own `openGraph`/`twitter` must set all of
+  it; that's why every page calls `socialMeta()` instead of relying on the
+  layout. Home is `og:type website`, case studies are `article`.
+- **Preview image:** `public/og.png` (1200×630), shared by every page. It's
+  "Option D": name, role and vpcodes.in on the left, two tilted case study
+  cards (Mr. Plastic Repair outline, Deccan Produce filled white) on the
+  right, under `> ls ./work`. Source: `scripts/og/og-image.html`. Re-render
+  it when the case studies change.
+- **Crawlers:** `app/robots.ts` builds `/robots.txt` (everything allowed,
+  points at the sitemap); `app/sitemap.ts` builds `/sitemap.xml` from its
+  `PAGES` list. Both use `dynamic = 'force-static'` for the static export.
+- **LLMs:** `public/llms.txt` is a Markdown summary (bio, stack, both case
+  studies, resumes, links) following the llmstxt.org format. It only states
+  what the site itself says.
+
 ## History
 The site used to be a 15-frame scroll sequence of an archer in a grayscale
 forest ("Namaste, I am Vivek Patel…" then "What can I do?"), landscape only,

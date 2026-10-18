@@ -4,6 +4,17 @@ What changed on vpcodes.in, newest first.
 
 ## 2026-10-18
 
+### Link previews, robots.txt, sitemap and llms.txt
+- Added a link-preview image, `public/og.png` (1200×630, "Option D": name,
+  role and two case study cards). Source in `scripts/og/og-image.html`.
+- Added Open Graph and Twitter-card tags and canonical URLs to every page
+  through `socialMeta()` in the new `lib/seo.ts`. Case study pages now
+  preview with their own title and description.
+- Added `app/robots.ts` (`/robots.txt`, allows all crawlers and links the
+  sitemap) and `app/sitemap.ts` (`/sitemap.xml`, home plus both case
+  studies).
+- Added `public/llms.txt`, a Markdown summary of the portfolio for LLMs.
+
 ### Nav: Work link
 - Added a **Work** link to the nav bar, left of Contact
   (`components/SiteNav.tsx`).

@@ -1,0 +1,26 @@
+# Vivek Patel
+
+> Software developer in Mumbai, India. Builds full-stack web apps, phone-first websites for small businesses, self-hosted infrastructure and hardware-connected side projects, and handles design, build and deployment end to end. This is his portfolio, vpcodes.in.
+
+A Software Developer who genuinely loves building things from full-stack web apps to self-hosted infrastructure and hardware connected side projects. He enjoys the entire lifecycle of a build: designing the system, shipping it, and then figuring out how to deploy and run it himself.
+
+- Stack: React, Next.js, React Native, TypeScript, Node.js / Express (MERN), Docker, CI/CD
+- Location: Mumbai, India
+- Contact: patelvivek.v7@gmail.com
+
+## Case studies
+
+- [Mr. Plastic Repair](https://vpcodes.in/work/mr-plastic-repair): Phone-first website for a one-man bumper welding shop in Toronto. Design and development. The whole site is built around one ask, "send a photo for a quote", which leads into a WhatsApp chat. Labelled old-vs-new repair photos, real reviews, the owner's own copy. Built with React, Vite and TypeScript, a pre-rendered homepage, a Hono API on Cloudflare Workers, R2 for photos, D1 for enquiries and Cloudflare Access for /admin. Only the domain costs money. Status: working demo, going live when the client is ready to launch.
+- [Deccan Produce](https://vpcodes.in/work/deccan-produce): Mobile-first website for an Indian exporter of fresh fruit, fruit pulps and agri commodities. Design and development. Products stand in a field as plot signs; tapping a sign grows it into a card and then a product page with specs, seasons, certificates (each linked to the company's own PDF) and packing. Built with Next.js 15 and TypeScript as static pages, CSS Modules with design tokens, self-hosted fonts and typed content files, deployed on Vercel with GitHub Actions checks. Status: live preview kept out of search until launch; a CMS comes next.
+
+## Resumes
+
+- [Frontend Developer resume](https://docs.google.com/document/d/1nvy0rS18mge6-sDyVwGDvYvfSGULP7Ha5IAmTkDnRv8/view): React, Next.js, React Native
+- [Software Developer resume (full-stack)](https://docs.google.com/document/d/1cmbfsnNkiaZUKv4jy_zNQe3KUJzWz-QNqmA_YEPGtNA/view): MERN, Docker, CI/CD
+
+## Links
+
+- [Portfolio](https://vpcodes.in)
+- [LinkedIn](https://www.linkedin.com/in/vivek-patel-v7/)
+- [GitHub](https://github.com/Specterr07)
+- [Email](mailto:patelvivek.v7@gmail.com)

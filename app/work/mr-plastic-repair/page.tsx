@@ -2,15 +2,20 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Anton } from 'next/font/google';
 import SiteFooter from '@/components/SiteFooter';
+import { socialMeta } from '@/lib/seo';
 import '../case-study.css';
 
 // Anton is Mr. Plastic Repair's headline face; only this page loads it (type sample in Design).
 const anton = Anton({ subsets: ['latin'], weight: '400', variable: '--font-anton', display: 'swap' });
 
+const TITLE = 'Mr. Plastic Repair - case study · Vivek Patel';
+const DESCRIPTION =
+  'A phone-first website for a one-man bumper welding shop in Toronto: research, design and build.';
+
 export const metadata: Metadata = {
-  title: 'Mr. Plastic Repair - case study · Vivek Patel',
-  description:
-    'A phone-first website for a one-man bumper welding shop in Toronto: research, design and build.',
+  title: TITLE,
+  description: DESCRIPTION,
+  ...socialMeta({ title: TITLE, description: DESCRIPTION, path: '/work/mr-plastic-repair', type: 'article' }),
 };
 
 const IMG = '/work/mr-plastic-repair';

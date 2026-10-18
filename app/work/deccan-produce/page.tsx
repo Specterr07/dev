@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Barlow_Condensed, Fraunces } from 'next/font/google';
 import SiteFooter from '@/components/SiteFooter';
+import { socialMeta } from '@/lib/seo';
 import '../case-study.css';
 
 // Deccan Produce's own faces: Fraunces for statements, Barlow Condensed for signs.
@@ -9,10 +10,14 @@ import '../case-study.css';
 const fraunces = Fraunces({ subsets: ['latin'], weight: '600', variable: '--font-fraunces', display: 'swap' });
 const barlow = Barlow_Condensed({ subsets: ['latin'], weight: '700', variable: '--font-barlow', display: 'swap' });
 
+const TITLE = 'Deccan Produce - case study · Vivek Patel';
+const DESCRIPTION =
+  'A mobile-first website for an Indian exporter of fresh fruit, fruit pulps and agri commodities: research, design and build.';
+
 export const metadata: Metadata = {
-  title: 'Deccan Produce - case study · Vivek Patel',
-  description:
-    'A mobile-first website for an Indian exporter of fresh fruit, fruit pulps and agri commodities: research, design and build.',
+  title: TITLE,
+  description: DESCRIPTION,
+  ...socialMeta({ title: TITLE, description: DESCRIPTION, path: '/work/deccan-produce', type: 'article' }),
 };
 
 const IMG = '/work/deccan-produce';

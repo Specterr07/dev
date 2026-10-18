@@ -3,6 +3,7 @@ import { Gaegu, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import SiteNav from '@/components/SiteNav';
 import AmbientSound from '@/components/AmbientSound';
+import { SITE_URL, socialMeta } from '@/lib/seo';
 
 // Gaegu: hand-drawn display face for the name and headings.
 const gaegu = Gaegu({
@@ -20,11 +21,15 @@ const mono = JetBrains_Mono({
   display: 'swap',
 });
 
+const TITLE = 'Vivek Patel - software developer.';
+const DESCRIPTION =
+  'Software developer, engineer, with a creative head. Beamed down to Mumbai.';
+
 export const metadata: Metadata = {
-  metadataBase: new URL('https://vpcodes.in'),
-  title: 'Vivek Patel - software developer.',
-  description:
-    'Software developer, engineer, with a creative head. Beamed down to Mumbai.',
+  metadataBase: new URL(SITE_URL),
+  title: TITLE,
+  description: DESCRIPTION,
+  ...socialMeta({ title: TITLE, description: DESCRIPTION, path: '/' }),
 };
 
 export const viewport: Viewport = {
