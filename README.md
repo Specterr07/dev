@@ -4,8 +4,9 @@ A single-page portfolio built as a **static Next.js (App Router) export**,
 deployed to GitHub Pages at [vpcodes.in](https://vpcodes.in).
 
 Black-and-white space theme: a warp starfield hero with a hand-drawn intro,
-then an about section with a playable voice note and two resume links. Works
-in portrait and landscape, phone and desktop.
+an about section with a playable voice note and two resume links, then a
+**Work** section linking to case study pages. Works in portrait and landscape,
+phone and desktop. See `CHANGELOG.md` for what changed and when.
 
 ## Develop
 
@@ -22,7 +23,8 @@ npm run build      # static export -> ./out  (next.config.js: output: 'export')
 
 ## Structure
 
-- `app/page.tsx` — hero → about → footer.
+- `app/page.tsx` — hero → about → work → footer (`#top`, `#about`, `#work`
+  anchors).
 - `app/layout.tsx` — fonts (Gaegu + JetBrains Mono via `next/font`), nav,
   ambient sound.
 - `app/icon.svg` — favicon (the glasses logo).
@@ -34,7 +36,13 @@ npm run build      # static export -> ./out  (next.config.js: output: 'export')
   (`RESUMES` holds the Google Docs links).
 - `components/VoiceNote.tsx` — the voice-note player (waveform, seek, ducks the
   ambient loop while playing).
-- `components/SiteNav.tsx` — glasses logo + the inline-expanding Contact menu.
+- `components/SiteNav.tsx` — glasses logo, a **Work** link, and the
+  inline-expanding Contact menu.
+- `components/WorkSection.tsx` — "Selected work" cards. `WORK` lists the case
+  studies; add an entry once its page exists.
+- `app/work/<slug>/page.tsx` — one case study page each (`mr-plastic-repair`,
+  `deccan-produce`), sharing `app/work/case-study.css`. Each loads its own
+  client fonts. Screenshots live in `public/work/<slug>/`.
 - `components/AmbientSound.tsx` — opt-in ambient loop + speaker toggle.
 - `components/SiteFooter.tsx`
 - `public/audio/` — `ambience.mp3` and `voice-note.m4a` (see its README).

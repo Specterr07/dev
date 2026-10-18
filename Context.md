@@ -7,11 +7,16 @@ outline-only drawings, with a space theme. Type is **Gaegu** (hand-drawn,
 for the name, bio and headings) and **JetBrains Mono** (everything else,
 the "engineer" voice).
 
-The page has two sections:
+The home page has three sections:
 
 1. **Hero** (`components/UfoHero.tsx`): a warp starfield with the intro text.
 2. **About** (`components/AboutSection.tsx`): bio, a voice note, and two
-   resume buttons. The resumes replace a separate work/experience section.
+   resume buttons.
+3. **Work** (`components/WorkSection.tsx`): "Selected work" cards that link to
+   case study pages under `/work/<slug>`.
+
+Anchors on the home page: `#top`, `#about`, `#work` (empty spans in
+`app/page.tsx`, placed just before each section).
 
 ### Tech stack
 - Next.js (App Router, static export), React 18, TypeScript
@@ -68,11 +73,39 @@ Performance and accessibility:
   The links live in `RESUMES` in `AboutSection.tsx`. Both docs must be shared as
   "Anyone with the link: Viewer".
 
+## Work and case studies
+
+- `WORK` in `WorkSection.tsx` lists the case studies (slug, name, one-line
+  meta, cover image). Add an entry only once `app/work/<slug>/page.tsx` exists.
+- Cards reuse the resume-card look (tilt, straighten and fill white on hover)
+  with a screenshot on top.
+- Case studies so far:
+  - **Mr. Plastic Repair** (`/work/mr-plastic-repair`): phone-first site for a
+    Toronto bumper welding shop. Loads Anton on this page only.
+  - **Deccan Produce** (`/work/deccan-produce`): mobile-first site for an
+    Indian fruit exporter. Loads Fraunces and Barlow Condensed on this page
+    only.
+- Each page runs: brief, research, design, build, final screens, then a "Keep
+  exploring" link to the other case study. Shared styles are in
+  `app/work/case-study.css` (`cs-*` classes); images are in
+  `public/work/<slug>/`.
+
 ## Nav and branding
 - The logo is an outline of Vivek's glasses (traces itself in on load, with a
   lens glare every few seconds). The same drawing is the favicon
   (`app/icon.svg`).
-- The Contact menu expands inline to LinkedIn, GitHub and Mail.
+- Right side of the bar: **Work**, then **Contact** (both in the `.nav__links`
+  wrapper).
+- **Work** (`.nav__link`) matches the Contact button's type. On the home page
+  it smooth-scrolls to `#work`, stopping 80px above it so the fixed 64px nav
+  doesn't cover the heading. On a case study page it is a plain link to
+  `/#work`; on arrival the nav redoes the jump (at 100 ms and 600 ms) because
+  the hero's GSAP pin spacer is added after hydration and the browser's own
+  anchor jump can land short.
+- The Contact menu expands inline to LinkedIn, GitHub and Mail (on phones, a
+  small panel drops below it).
+- The logo goes home from a case study page and scrolls to the top on the
+  home page.
 - The nav turns solid (blurred, with a thin border) after the hero.
 
 ## History

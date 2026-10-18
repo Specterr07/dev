@@ -8,6 +8,14 @@ const LINKS = [
   { label: 'Mail', href: 'mailto:patelvivek.v7@gmail.com' },
 ];
 
+// Scroll to the Work section, leaving room for the fixed 64px nav.
+function scrollToWork(behavior: ScrollBehavior) {
+  const el = document.getElementById('work');
+  if (!el) return;
+  const top = el.getBoundingClientRect().top + window.scrollY - 80;
+  window.scrollTo({ top, behavior });
+}
+
 export default function SiteNav() {
   const [solid, setSolid] = useState(false);
   const [open, setOpen] = useState(false);
@@ -44,6 +52,23 @@ export default function SiteNav() {
     };
   }, [open]);
 
+  // Arriving from a case study at /#work: the hero's pin spacer is added after
+  // hydration, so the browser's own jump to the anchor can land short. Redo it.
+  useEffect(() => {
+    if (window.location.pathname !== '/' || window.location.hash !== '#work') return;
+    const go = () => scrollToWork('auto');
+    const timers = [setTimeout(go, 100), setTimeout(go, 600)];
+    return () => timers.forEach(clearTimeout);
+  }, []);
+
+  const toWork = (e: React.MouseEvent) => {
+    // On a case study page the link goes to /#work; on the home page it scrolls there.
+    if (window.location.pathname !== '/') return;
+    e.preventDefault();
+    setOpen(false);
+    scrollToWork('smooth');
+  };
+
   const toTop = (e: React.MouseEvent) => {
     // On a case study page the logo goes home; on the home page it scrolls to the top.
     if (window.location.pathname !== '/') return;
@@ -64,37 +89,43 @@ export default function SiteNav() {
         </svg>
       </a>
 
-      <div
-        ref={contactRef}
-        className={`nav__contact${open ? ' nav__contact--open' : ''}`}
-      >
-        {/* the three options unfurl leftward, inline in the bar */}
-        <div className="nav__socials" aria-hidden={!open}>
-          {LINKS.map((l) => (
-            <a
-              key={l.label}
-              href={l.href}
-              className="nav__social"
-              tabIndex={open ? 0 : -1}
-              target={l.href.startsWith('http') ? '_blank' : undefined}
-              rel={l.href.startsWith('http') ? 'noreferrer' : undefined}
-            >
-              {l.label}
-            </a>
-          ))}
-        </div>
+      <div className="nav__links">
+        <a href="/#work" className="nav__link" onClick={toWork}>
+          Work
+        </a>
 
-        <button
-          type="button"
-          className="nav__contact-toggle"
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
+        <div
+          ref={contactRef}
+          className={`nav__contact${open ? ' nav__contact--open' : ''}`}
         >
-          <span className="nav__caret" aria-hidden="true">
-            ‹
-          </span>
-          <span>Contact</span>
-        </button>
+          {/* the three options unfurl leftward, inline in the bar */}
+          <div className="nav__socials" aria-hidden={!open}>
+            {LINKS.map((l) => (
+              <a
+                key={l.label}
+                href={l.href}
+                className="nav__social"
+                tabIndex={open ? 0 : -1}
+                target={l.href.startsWith('http') ? '_blank' : undefined}
+                rel={l.href.startsWith('http') ? 'noreferrer' : undefined}
+              >
+                {l.label}
+              </a>
+            ))}
+          </div>
+
+          <button
+            type="button"
+            className="nav__contact-toggle"
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
+          >
+            <span className="nav__caret" aria-hidden="true">
+              ‹
+            </span>
+            <span>Contact</span>
+          </button>
+        </div>
       </div>
 
     </header>

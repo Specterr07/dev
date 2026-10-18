@@ -192,12 +192,39 @@ html {
   opacity: 1;
 }
 
+/* ---------------------------------------------------------------------------
+   Right side of the bar — "Work" (scrolls to the Work section, or goes to
+   /#work from a case study) sits left of Contact and matches its type.
+--------------------------------------------------------------------------- */
+.nav__links {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.1rem, 3vw, 2.2rem);
+  min-width: 0;
+}
+
+.nav__link {
+  flex: none;
+  color: rgba(255, 255, 255, 0.72);
+  text-decoration: none;
+  font-size: clamp(0.72rem, 1.05vw, 0.86rem);
+  padding: 0.4em 0;
+  transition: color 0.3s ease;
+}
+
+.nav__link:hover,
+.nav__link:focus-visible {
+  color: #fff;
+  outline: none;
+}
+
 /* Tablet / phone: roomier tap targets. */
 @media (max-width: 768px) {
   .nav {
     padding: 0 clamp(1rem, 5vw, 1.6rem);
   }
   .nav__contact-toggle,
+  .nav__link,
   .nav__social {
     padding-top: 0.7em;
     padding-bottom: 0.7em;
@@ -359,6 +386,7 @@ html {
 .nav__brand { letter-spacing: 0; }
 .nav__brand svg { display: block; width: 64px; height: 26px; }
 .nav__contact-toggle,
+.nav__link,
 .nav__social { text-transform: none; letter-spacing: 0.08em; }
 
 
