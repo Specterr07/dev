@@ -4,6 +4,12 @@ What changed on vpcodes.in, newest first.
 
 ## 2026-10-18
 
+### Planet and asteroids in the hero
+- Added a dark planet with a glowing rim behind the name and 7 floating,
+  tumbling asteroids (4 on phones), on a second canvas above the stars
+  (`components/space.ts`). The planet rises in on arrival and sinks on
+  scroll; the rocks fly outward with the warp. Mouse parallax on desktop.
+
 ### Link previews, robots.txt, sitemap and llms.txt
 - Added a link-preview image, `public/og.png` (1200×630, "Option D": name,
   role and two case study cards). Source in `scripts/og/og-image.html`.

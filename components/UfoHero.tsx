@@ -3,6 +3,7 @@
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { renderPlanet, makeAsteroid, drawAsteroid, type Planet, type Asteroid } from './space';
 
 // --- tuning knobs ---------------------------------------------------------
 // Scroll distance (in viewport heights) the hero stays pinned while the text
@@ -15,6 +16,11 @@ const STARS_MOBILE = 200;
 const CRUISE = 0.12;
 // Repeat visitors get the intro this many times faster.
 const REPEAT_RATE = 4;
+// Floating asteroids around the name.
+const ROCKS_DESKTOP = 7;
+const ROCKS_MOBILE = 4;
+// How far (css px) the planet and nearest rocks shift with the mouse.
+const PARALLAX = 22;
 // -----------------------------------------------------------------------
 
 const clamp = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
@@ -47,6 +53,7 @@ export default function UfoHero() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const sceneRef = useRef<HTMLCanvasElement>(null);
   const items = useRef<(HTMLElement | null)[]>([]);
   const ulineRef = useRef<HTMLSpanElement>(null);
   const cueRef = useRef<HTMLAnchorElement>(null);
@@ -82,7 +89,12 @@ export default function UfoHero() {
     const stage = stageRef.current!;
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    const scene = sceneRef.current!;
+    const sctx = scene.getContext('2d');
+    if (!ctx || !sctx) return;
+    let planet: Planet | null = null;
+    let rocks: Asteroid[] = [];
+    let dpr = 1;
 
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -106,6 +118,16 @@ export default function UfoHero() {
       ctx.setTransform(d, 0, 0, d, 0, 0);
       ctx.fillStyle = '#000';
       ctx.fillRect(0, 0, w, h);
+      scene.width = canvas.width;
+      scene.height = canvas.height;
+      sctx.setTransform(d, 0, 0, d, 0, 0);
+      const mob = w < 600;
+      // rebuild when size class or pixel density changes (not on every resize)
+      if (!planet || d !== dpr || mob !== (rocks.length === ROCKS_MOBILE)) {
+        rocks = Array.from({ length: mob ? ROCKS_MOBILE : ROCKS_DESKTOP }, () => makeAsteroid(d, mob));
+      }
+      dpr = d;
+      planet = renderPlanet(w, h, d);
     };
     fit();
     const ro = new ResizeObserver(fit);
@@ -124,6 +146,15 @@ export default function UfoHero() {
     };
 
     // --- pause when the hero is off screen or the tab is hidden ---
+    // --- mouse parallax (desktop pointers only) ---
+    let mx = 0, my = 0, tmx = 0, tmy = 0;
+    const onMove = (e: PointerEvent) => {
+      if (e.pointerType !== 'mouse') return;
+      tmx = (e.clientX / window.innerWidth) * 2 - 1;
+      tmy = (e.clientY / window.innerHeight) * 2 - 1;
+    };
+    window.addEventListener('pointermove', onMove, { passive: true });
+
     let visible = true;
     const io_ = new IntersectionObserver(([e]) => { visible = e.isIntersecting; });
     io_.observe(sectionRef.current!);
@@ -189,6 +220,45 @@ export default function UfoHero() {
         s.px = sx;
         s.py = sy;
       }
+
+      // Planet + asteroids. Planet rises in with the arrival, sinks on scroll;
+      // rocks fade in, then fly outward past the camera as the warp kicks in.
+      mx += (tmx - mx) * Math.min(1, dt * 3);
+      my += (tmy - my) * Math.min(1, dt * 3);
+      sctx.clearRect(0, 0, w, h);
+      if (planet) {
+        const rise = 1 - out3(seg(T, 0.15, 2.2));
+        const sink = io(p);
+        const py = rise * h * 0.35 + sink * h * 0.75 - my * PARALLAX * 0.3;
+        const px = -mx * PARALLAX * 0.3;
+        // stays opaque while it sinks so stars never show through the body
+        sctx.globalAlpha = seg(T, 0.15, 1.2);
+        sctx.drawImage(planet.img, px - planet.pad, py - planet.pad, w + planet.pad * 2, h + planet.pad * 2);
+        sctx.globalAlpha = 1;
+      }
+      const fadeIn = out3(seg(T, 1.0, 2.6));
+      const blast = in2(p);
+      const drift = reduce ? 0.1 : 1;
+      for (const k of rocks) {
+        k.x += k.vx * dt * drift;
+        k.y += k.vy * dt * drift;
+        k.a += k.va * dt * drift;
+        // wrap around once fully off screen
+        const m = (k.r * 1.5) / Math.max(1, w);
+        if (k.x < -m) k.x = 1 + m; else if (k.x > 1 + m) k.x = -m;
+        const mY = (k.r * 1.5) / Math.max(1, h);
+        if (k.y < -mY) k.y = 1 + mY; else if (k.y > 1 + mY) k.y = -mY;
+        const bob = reduce ? 0 : Math.sin(Tw * 0.6 + k.bob) * 6 * k.z;
+        let sx = k.x * w - mx * PARALLAX * k.z;
+        let sy = k.y * h + bob - my * PARALLAX * k.z;
+        // scroll: push outward from the centre and grow, nearer rocks faster
+        const push = 1 + blast * (1.5 + 2.5 * k.z);
+        sx = w / 2 + (sx - w / 2) * push;
+        sy = h / 2 + (sy - h / 2) * push;
+        const sc = (0.85 + 0.15 * fadeIn) * (1 + blast * 2 * k.z);
+        const al = fadeIn * (1 - seg(p, 0.55, 0.95));
+        drawAsteroid(sctx, k, sx, sy, sc, al);
+      }
     };
     raf = requestAnimationFrame(loop);
 
@@ -196,6 +266,7 @@ export default function UfoHero() {
       cancelAnimationFrame(raf);
       ro.disconnect();
       io_.disconnect();
+      window.removeEventListener('pointermove', onMove);
     };
   }, []);
 
@@ -211,6 +282,7 @@ export default function UfoHero() {
     <div ref={sectionRef} style={{ position: 'relative' }}>
       <div ref={stageRef} className="ufo-hero__stage">
         <canvas ref={canvasRef} className="ufo-hero__canvas" aria-hidden="true" />
+        <canvas ref={sceneRef} className="ufo-hero__canvas" aria-hidden="true" />
 
         <div className="ufo-hero__content">
           <p ref={setItem(0)} className="ufo-hero__item ufo-hero__greet">&gt; greetings, earthling.</p>

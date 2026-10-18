@@ -9,7 +9,9 @@ the "engineer" voice).
 
 The home page has three sections:
 
-1. **Hero** (`components/UfoHero.tsx`): a warp starfield with the intro text.
+1. **Hero** (`components/UfoHero.tsx` + `components/space.ts`): a warp
+   starfield, a dark planet with a glowing rim behind the name, and floating
+   asteroids.
 2. **About** (`components/AboutSection.tsx`): bio, a voice note, and two
    resume buttons.
 3. **Work** (`components/WorkSection.tsx`): "Selected work" cards that link to
@@ -44,6 +46,19 @@ How it moves:
 3. **Stars:** drawn on a `<canvas>` as streaks from a central vanishing point.
    Mostly white, with some pale ice-blue and rose (`STAR_COLORS` in
    `UfoHero.tsx`).
+
+4. **Planet + asteroids** (`components/space.ts`, drawn on a second canvas
+   above the stars and below the text, cleared every frame):
+   - The planet is pre-rendered once per resize (`renderPlanet`): near-black
+     body, thin warm rim and blue haze, brightest on the left. It rises in with
+     the arrival and sinks on scroll (it stays opaque so stars never show
+     through it).
+   - Asteroids (`ROCKS_DESKTOP` 7 / `ROCKS_MOBILE` 4) are random lumpy rocks
+     with craters, spawned away from the name. They drift, bob and tumble;
+     lighting stays fixed to the upper left while they rotate. On scroll they
+     fly outward and grow as the warp kicks in.
+   - Mouse parallax (`PARALLAX`, desktop pointers only): nearer rocks shift
+     more than far ones; the planet shifts a little.
 
 Performance and accessibility:
 - Only `transform`/`opacity` are animated on DOM elements; the canvas draws at
