@@ -3,6 +3,7 @@ import { Gaegu, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import SiteNav from '@/components/SiteNav';
 import AmbientSound from '@/components/AmbientSound';
+import SiteCursor from '@/components/SiteCursor';
 import { SITE_URL, socialMeta } from '@/lib/seo';
 
 // Gaegu: hand-drawn display face for the name and headings.
@@ -48,6 +49,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${gaegu.variable} ${mono.variable}`}>
       <body>
+        <SiteCursor />
         <SiteNav />
         <AmbientSound />
         {children}

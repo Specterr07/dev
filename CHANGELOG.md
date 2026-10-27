@@ -2,6 +2,17 @@
 
 What changed on vpcodes.in, newest first.
 
+## 2026-10-27
+
+### Themed custom cursor (HextaUI adaptation)
+- Added custom animated cursor components in `components/ui/cursor.tsx`:
+  - `MouseTrackerProvider`, `Pointer`, `PointerFollower`, and `ThemedPointerIcon`.
+  - Built-in monochrome SVG cursor with 60 FPS requestAnimationFrame lerp follower.
+  - Safe mobile/touch filtering via `(hover: none) and (pointer: coarse)` media query.
+- Added `SiteCursor` in `components/SiteCursor.tsx` and mounted it in `app/layout.tsx` for global cursor tracking across the site with a `> vpcodes` badge.
+- Added `ThemedCursorCard` in `components/ThemedCursorCard.tsx` as an interactive tilted transmission card on the home page.
+- Added cursor styles and `.hide-native-cursor` utility in `app/globals.css`.
+
 ## 2026-10-18
 
 ### Planet and asteroids in the hero

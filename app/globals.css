@@ -767,3 +767,128 @@ a.work-card:hover .resume__arrow { transform: translate(3px, -3px); }
 @media (prefers-reduced-motion: reduce) {
   .work-card { transition: none; }
 }
+
+/* ---------------------------------------------------------------------------
+   Custom Cursor & Interactive Card (adapted from HextaUI)
+--------------------------------------------------------------------------- */
+.cursor-card {
+  position: relative;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: clamp(24px, 5vw, 36px);
+  background: rgba(8, 9, 10, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1.5px solid #fff;
+  border-radius: 20px;
+  text-align: left;
+  transform: rotate(-1.2deg);
+  transition: transform 0.35s cubic-bezier(0.3, 1.6, 0.5, 1), border-color 0.3s ease;
+  overflow: hidden;
+}
+
+.cursor-card:hover {
+  transform: rotate(0deg) translateY(-3px);
+}
+
+.cursor-card__kicker {
+  margin: 0 0 10px;
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.cursor-card__title {
+  margin: 0 0 14px;
+  font-family: var(--font-gaegu), cursive;
+  font-weight: 700;
+  font-size: clamp(2rem, 3.5vw, 2.7rem);
+  line-height: 1.08;
+  color: #fff;
+}
+
+.cursor-card__desc {
+  margin: 0 0 26px;
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.cursor-card__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.cursor-card__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border: 1.5px solid #fff;
+  border-radius: 999px;
+  background: #000;
+  color: #fff;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.82rem;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.cursor-card__btn--primary {
+  background: #fff;
+  color: #000;
+}
+
+.cursor-card__btn--primary:hover {
+  background: transparent;
+  color: #fff;
+}
+
+.cursor-card__btn--secondary:hover {
+  background: #fff;
+  color: #000;
+}
+
+.cursor-card__btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Cursor follower badge in theme */
+.cursor-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: rgba(12, 14, 18, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #fff;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.cursor-tag__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+}
+
+/* Hide native OS cursor when custom cursor is active */
+.hide-native-cursor,
+.hide-native-cursor * {
+  cursor: none !important;
+}
+
+

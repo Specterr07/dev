@@ -142,6 +142,26 @@ Performance and accessibility:
   studies, resumes, links) following the llmstxt.org format. It only states
   what the site itself says.
 
+## Custom Cursor (HextaUI adaptation)
+
+- Adapted from HextaUI custom cursor pattern to match the black-and-white space & engineer aesthetic.
+- Components in `components/ui/cursor.tsx`:
+  - `MouseTrackerProvider` (`CursorProvider`): manages mouse coordinates and visibility state across a container or globally (`global={true}`).
+  - `Pointer` (`Cursor`): instantaneous tracking pointer element. Includes `ThemedPointerIcon` (monochrome outline pointer SVG with drop shadow).
+  - `PointerFollower` (`CursorFollow`): smooth trailing follower powered by `requestAnimationFrame` and lerp easing. Supports alignments (`bottom-right`, `bottom-left`, `top-right`, `top-left`, `center`).
+- `SiteCursor` (`components/SiteCursor.tsx`): global site-wide custom cursor mounted in `app/layout.tsx`. Shows the themed pointer with a `> vpcodes` badge follower.
+- `ThemedCursorCard` (`components/ThemedCursorCard.tsx`): an interactive tilted outline card demonstrating the themed copy and cursor actions.
+- Styles in `app/globals.css`:
+  - `.cursor-card`: tilted outline card matching resumes and work cards.
+  - `.cursor-tag`: monospace badge (`rgba(12, 14, 18, 0.95)`, 1px border, white glowing dot).
+  - `.hide-native-cursor`: hides standard OS cursor when custom cursor is active.
+- Accessibility & mobile:
+  - Disables on touch-only devices (`(hover: none) and (pointer: coarse)`).
+  - Position snaps immediately on initial mouse entry to prevent flying in from (0, 0).
+- Future improvements to explore:
+  - Dynamic hover states for links/buttons (e.g. tag changes to `[open]` or `[view]` on case study cards).
+  - Custom trail or magnetic snap effect on interactive elements.
+
 ## History
 The site used to be a 15-frame scroll sequence of an archer in a grayscale
 forest ("Namaste, I am Vivek Patel…" then "What can I do?"), landscape only,
